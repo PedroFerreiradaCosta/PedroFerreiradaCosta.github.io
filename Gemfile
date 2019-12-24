@@ -4,6 +4,6 @@ gem 'jekyll'
 
 group :jekyll_plugins do
   gem 'jekyll-sitemap'
-  gem 'jekyll-feed'
   gem 'jekyll-seo-tag'
+  gem 'jekyll-theme-hacker', '~> 0.1.1'
 end
