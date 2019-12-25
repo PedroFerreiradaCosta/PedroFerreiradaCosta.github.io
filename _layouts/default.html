@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-  <html>
+  <html lang="{{ site.locale | slice: 0,2 | default: "en" }}" class="no-js">
     <head>
       <title>{{ page.title }}</title>
       <!-- link to main stylesheet -->
       <link rel="stylesheet" type="text/css" href="/css/main.css">
     </head>
-    <body>
+      <body class="layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}">
       <nav>
           <ul>
               <li><a href="/">Home</a></li>
