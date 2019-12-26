@@ -1,35 +1,59 @@
 ---
+title: Welcome to BioData Club!
 layout: splash
-title: Pedro Ferreira da Costa, PhD Researcher
-
-
+classes: wide
 header:
   overlay_color: "#333"
   overlay_filter: "0.20"
-  overlay_image: /assets/neurons.jpg
-excerpt: "Pedro Ferreira da Costa, PhD Reseacher"
+  overlay_image: /assets/img/biodataclubphoto.jpg
+excerpt: "Let's learn about data science together"
 intro:
-  -  image_path: /assets/foto_tmp.png
-     alt: "Pedro F Costa"
-     title: "Who's this blocke?"
+  -  image_path: /assets/img/Hex-BDP-small.png
+     alt: "BioData Club logo"
+     title: "What is BioData Club?"
      excerpt: "BioData Club is an interdisciplinary community at OHSU dedicated to promoting a fun and supportive culture of co-learning in data science skills and open science principles. We host workshops and social events where attendees can learn and work on projects among friends and colleagues. Biodata Club welcomes everyone who wants to better their know-how in all things data, regardless of skill level. We want to replace statistics anxiety and code fear with inspiration and motivation to learn and share. BioData Club is supported by the [OHSU Library](https://www.ohsu.edu/library) and [DMICE](https://www.ohsu.edu/school-of-medicine/medical-informatics-and-clinical-epidemiology).<br><br>"
 events:
   - title: "Events"
     excerpt: "BioData Clubs host two types of events: practical learning workshops and hacky hours, often linked by a shared theme.  Hacky hours are for networking.  People come to talk about their work, get feedback, and have fun!  Our goal is co-learning, and we believe we have a lot to teach each other."
+contact:
+  - title: "Contact Us and Get Involved"
+    excerpt: "Whether you're a beginner, intermediate, or expert, we want you to be involved with BioData Club."
+get_involved:
+  -  title: "Suggest a Workshop"
+     btn_label: "Suggest an Event"
+     btn_class: "btn--primary"
+     url: /teaching/
+     excerpt: "We're all learners in BioData Club. Request a workshop, and if you are interested in helping teach it, we'll support you!"
+  -  title: "Slack"
+     excerpt: "Join the BioData Club slack team. Everyone with an ohsu.edu, pdx.edu, and reed.edu email can sign up by themselves. If you're outside of these addresses, please email laderast@ohsu.edu for an invite."
+     url: https://biodata-club.slack.com/
+     btn_label: "Join Slack"
+     btn_class: "btn--primary"
+  -  title: "Mailing List"
+     excerpt: "Join the mailing list.This link only works within the OHSU firewall. If you're off campus, please email laderast@ohsu.edu to join."
+     btn_label: "Mailing List"
+     btn_class: "btn--primary"
+     url: http://mailman.ohsu.edu/cgi-bin/mailman/listinfo/biodata-club
 ---
-<div class="blurb" style=
-"background-image: url('assets/background/background-blank-empty-light-62693.jpg');
-background-repeat: no-repeat;">
-
 {% include feature_row %}
 
-<img src="/assets/foto_tmp.png" alt="Pedro da Costa" style="float:left;width:250px;height:250px;" hspace="20">
-<p style="text-align:justify;">BioData Club is an interdisciplinary community at OHSU dedicated to promoting a fun and supportive culture of co-learning in data science skills and open science principles. We host workshops and social events where attendees can learn and work on projects among friends and colleagues. Biodata Club welcomes everyone who wants to better their know-how in all things data, regardless of skill level. We want to replace statistics anxiety and code fear with inspiration and motivation to learn and share. BioData Club is supported by the [OHSU Library](https://www.ohsu.edu/library) and [DMICE](https://www.ohsu.edu/school-of-medicine/medical-informatics-and-clinical-epidemiology).</p><br><br>
+<a name="about"></a>
+{% include feature_row id="intro" type = "left" %}
 
 <a name="events"></a>
 {% include feature_row id="events" type = "center" %}
 
-    <h1>This page is being updated</h1>
-    <p>Please stay tuned</p>
-    <p><a href="/about">To know more</a></p>
-</div><!-- /.blurb -->
+{% assign sorted_events = site.events | sort: 'date' %}
+
+{% capture now_moment %}{{ "today" | date: '%s' }}{% endcapture %}
+
+{% for event in sorted_events %}
+    {% capture date %}{{ event.date | date: '%s' | plus: 0 }}{% endcapture %}
+     {% if date > now_moment %}
+      {% include events2.html %}
+      {% endif %}
+{% endfor %}
+
+<a name="contact"></a>
+{% include feature_row id="contact" type = "center" %}
+{% include feature_row id="get_involved" %}

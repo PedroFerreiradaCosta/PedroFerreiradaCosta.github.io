@@ -1,8 +1,12 @@
-- name: Home
-  link: /
-- name: About
-  link: /about.html
-- name: Blog
-  link: /blog.html
-- name: Staff
-  link: /staff.html
+# main links
+main:
+  - title: "Events"
+    url: "/#events"
+  - title: "Lessons"
+    url: /lessons/
+  - title: "About"
+    url: "/teaching/"
+  - title: "Blog"
+    url: "/blog/"
+  - title: "Contact"
+    url: "/#contact"
