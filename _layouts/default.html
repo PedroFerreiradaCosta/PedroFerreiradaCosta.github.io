@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-  <html lang="en-UK">
+  <html lang="en-GB">
     <head>
       <title>{{ page.title }}</title>
       <!-- link to main stylesheet -->
       <link rel="stylesheet" type="text/css" href="/css/main.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
       <body class="layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}">
 
