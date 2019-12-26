@@ -6,6 +6,9 @@
       <link rel="stylesheet" type="text/css" href="/css/main.css">
     </head>
       <body class="layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}">
+
+          {% include browser-upgrade.html %}
+          {% include masthead.html %}
       <nav>
           <ul>
               <li><a href="/">Home</a></li>
@@ -14,6 +17,9 @@
               <li><a href="/blog">Blog</a></li>
           </ul>
       </nav>
+
+
+
       <div class="container">
       
       {{ content }}
