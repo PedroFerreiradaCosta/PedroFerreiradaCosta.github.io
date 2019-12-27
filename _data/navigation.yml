@@ -1,12 +1,12 @@
 # main links
 main:
   - title: "About"
-    link: /
+    url: "/"
   - title: "Research"
-    link: /research/
+    url: "/research/"
   - title: "Outreach"
-    link: /outreach/
+    url: "/outreach/"
   - title: "CV"
-    link: "/assets/doc/CV_Pedro_daCosta.pdf"
+    url: "/assets/doc/CV_Pedro_daCosta.pdf"
   - title: "MLart"
-    link: "/MLart"
+    url: "/MLart"
