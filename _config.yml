@@ -14,12 +14,12 @@ remote_theme           : "mmistakes/minimal-mistakes"
 minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
-locale                   : "en-US"
-title                    : "BioData Club"
+locale                   : "en-GB"
+title                    : "Searching Intelligence"
 title_separator          : "-"
-name                     : "Your Name"
-description              : "Homepage for BioData Club, an interdisciplinary group focusing on collaboration and learning together."
-url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+name                     : "Pedro Ferreira da Costa"
+description              : "Homeplace of my work. Everything from research, projects and others."
+url                      : https://pedroferreiradacosta.github.io/ # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
@@ -76,7 +76,7 @@ naver_site_verification  :
 
 # Social Sharing
 twitter:
-  username               :
+  username               : thepfcosta
 facebook:
   username               :
   app_id                 :
@@ -99,11 +99,11 @@ analytics:
 
 # Site Author
 author:
-  name             : "BioData Club Committee"
+  name             : "Pedro Ferreira da Costa"
   avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "We are a group of students, postdocs, staff and faculty focusing on learning data science skills."
-  location         : "Portland, OR"
-  email            :
+  bio              : "I am a PhD Researcher working in the intersection of neuroscience and machine learning. I am fundamentally interested in understanding intelligence."
+  location         : "London, GB"
+  email            : pedro.hpf.costa@gmail.com
   uri              :
   home             : # null (default), "absolute or relative url to link to author home"
   bitbucket        :
@@ -112,19 +112,19 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           :
+  github           : https://github.com/PedroFerreiradaCosta
   gitlab           :
   google_plus      :
   keybase          :
   instagram        :
   lastfm           :
-  linkedin         : # "john-doe-12345678" (the last part of your profile url, e.g. https://www.linkedin.com/in/john-doe-12345678)
+  linkedin         : pedro-hpf-costa # "john-doe-12345678" (the last part of your profile url, e.g. https://www.linkedin.com/in/john-doe-12345678)
   pinterest        :
   soundcloud       :
   stackoverflow    : # "123456/username" (the last part of your profile url, e.g. https://stackoverflow.com/users/123456/username)
   steam            : # "steamId" (the last part of your profile url, e.g. https://steamcommunity.com/id/steamId/)
   tumblr           :
-  twitter          :
+  twitter          : https://twitter.com/thepfcosta
   vine             :
   weibo            :
   xing             :
