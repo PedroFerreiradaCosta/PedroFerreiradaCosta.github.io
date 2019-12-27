@@ -6,8 +6,9 @@ layout: splash
 # This page will soon be updated with my Outreach work
 
 - BigBright Brain
-<!--
-## Teaching Opportunities
+
+
+<!--## Teaching Opportunities
 
 As a community, we are all lifelong learners in BioData Club. This means that:
 
