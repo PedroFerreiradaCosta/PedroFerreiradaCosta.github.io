@@ -5,8 +5,7 @@ layout: splash
 
 # This page will soon be updated with my Outreach work
 
-- BigBright Brain
-
+[![BBB](https://img.youtube.com/vi/4hz9KKaYVz4/2.jpg)](https://www.youtube.com/watch?v=4hz9KKaYVz4 "BBB")
 
 <!--## Teaching Opportunities
 
