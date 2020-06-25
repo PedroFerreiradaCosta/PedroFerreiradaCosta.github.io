@@ -1,6 +1,6 @@
 ---
 title: Research
-layout: single
+layout: archive
 ---
 
 ## Publications
@@ -12,7 +12,7 @@ layout: single
 * **Pedro F. da Costa**, Amschel de Rothschild, Oliver Smart, Amy Goodwin, Amy Leverington, M. Chien, Julia Koziel, Amy Pilkington, Emily Jones, Robert Leech, Eva Loth (2020) Pip’s world: An adaptive tablet battery to assess preschoolers with Autism Spectrum Disorder across five behavioural domains. INSAR 2020 - Submitted
 
 * Walter H. L. Pinaya, Cristina Scarpazza, Rafael Garcia-Dias, Sandra Vieira, Lea Baecker, **Pedro F. da Costa**, Alberto Redolfi, Giovanni B. Frisoni, Michela Pievani, Vince D. Calhoun, João R. Sato, Andrea Mechelli, Alzheimer's Disease Neuroimaging Initiative, Australian Imaging Biomarkers and Lifestyle flagship study of ageing, Normative modelling using deep autoencoders: a multi-cohort study on mild cognitive impairment and Alzheimer’s disease.
-bioRxiv 2020.02.10.931824; doi: https://doi.org/10.1101/2020.02.10.931824
+[bioRxiv](https://www.biorxiv.org/content/10.1101/2020.02.10.931824v1) 2020.02.10.931824; doi: https://doi.org/10.1101/2020.02.10.931824
 
 * Lea Baecker, **Pedro F. da Costa**, Jessica Dafflon, Rafael Garcia Dias, Sandra Vieira, CristinaScarpazza, Vince D. Calhoun, João R. Sato, Andrea Mechelli, Walter H. L. Pinaya (2020), Comparison of machine learning models for brain age prediction from region- and voxel-based morphometric data in UK Biobank. - In preparation
 
