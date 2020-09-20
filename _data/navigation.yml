@@ -1,12 +1,22 @@
-# main links
+# main links links
 main:
-  - title: "About"
-    url: "/"
-  - title: "Research"
-    url: "/research/"
-  - title: "Outreach"
-    url: "/outreach/"
+  - title: "Publications"
+    url: /publications/
+
+  - title: "Talks"
+    url: /talks/    
+
+  - title: "Teaching"
+    url: /teaching/    
+    
+  - title: "Portfolio"
+    url: /portfolio/
+        
+  - title: "Blog Posts"
+    url: /year-archive/
+    
   - title: "CV"
-    url: "/assets/doc/CV_Pedro_daCosta.pdf"
-  - title: "MLart"
-    url: "/MLart"
+    url: /cv/
+    
+  - title: "Guide"
+    url: /markdown/
