@@ -81,7 +81,7 @@ analytics:
 # Site Author
 author:
   name             : "Pedro Ferreira da Costa"
-  avatar           : "files/picture.png"
+  avatar           : "picture.png"
   bio              : "PhD Researcher in Machine Learning applied to Neurosciences"
   location         : "London, UK"
   employer         :
