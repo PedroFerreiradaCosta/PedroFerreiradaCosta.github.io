@@ -3,7 +3,7 @@ title: "Elucidating Cognitive Processes using LSMTs"
 collection: publications
 permalink: /publication/2020-09-20-elucidating-cognitive-processes
 excerpt: 'We evaluate shared representations between multiple cognitive tasks without relying on predefined cognitive processes. Next, we test if the learned representations provide a good explanation for human brain activation/'
-date: 2020-09-20
+date: 2019-09-20
 venue: 'Computational Cognitive Neuroscience 2019'
 paperurl: 'http://pedroferreiradacosta.github.io/files/daCosta_Cognitive_processes.pdf'
 citation: 'da Costa, P., Popescu, S., Leech, R., Lorenz, R. (2019). &quot;Elucidating Cognitive Processes Using LSTMs.&quot; <i>CCN19</i>'

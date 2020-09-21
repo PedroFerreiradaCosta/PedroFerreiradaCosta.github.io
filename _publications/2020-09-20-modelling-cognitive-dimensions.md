@@ -3,7 +3,7 @@ title: "Application of Artificial Neural Netoworks for modelling cognitive dimen
 collection: publications
 permalink: /publication/2020-09-20-modelling-cognitive-dimensions
 excerpt: 'This project takes advantage of developments with artificial neural networks to learn shared mechanisms of cognitive tasks'
-date: 2015-10-01
+date: 2018-10-01
 venue: 'Master thesis'
 paperurl: 'http://pedroferreiradacosta.github.io/files/daCosta_Master_thesis.pdf'
 citation: 'da Costa, P. (2018). &quot;Application of Artificial Neural Networks for modelling cognitive dimensions.&quot; <i>Instituto Superior Tecnico</i>'

@@ -3,7 +3,7 @@ title: "Bayesian Optimization for real-time, automatic design of face stimuli in
 collection: publications
 permalink: /publication/2020-09-20-human_centred
 excerpt: 'We propose a novel framework which combines generative adversarial networks (GANs) with Bayesian optimization to identify individual response patterns to many different faces.'
-date: 2020-09-20
+date: 2020-09-21
 venue: 'ICML - AutoML ws'
 paperurl: 'http://pedroferreiradacosta.github.io/files/daCosta_AutoML.pdf'
 citation: 'da Costa, P., Lorenz, R., Monti, R., Jones, E., Leech, R. (2020). &quot;Bayesian Optimization for real-time, automatic design of face stimuli in human-centred research.&quot; <i>ICML - AutoML ws</i>'
