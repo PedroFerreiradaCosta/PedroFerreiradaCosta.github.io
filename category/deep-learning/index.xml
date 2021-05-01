@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Deep Learning | Pedro F da Costa</title>
+    <link>http://pedroferreiradacosta.github.io/category/deep-learning/</link>
+      <atom:link href="http://pedroferreiradacosta.github.io/category/deep-learning/index.xml" rel="self" type="application/rss+xml" />
+    <description>Deep Learning</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2021 Pedro F da Costa</copyright><lastBuildDate>Mon, 19 Apr 2021 22:04:02 +0100</lastBuildDate>
+    <image>
+      <url>http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Deep Learning</title>
+      <link>http://pedroferreiradacosta.github.io/category/deep-learning/</link>
+    </image>
+    
+    <item>
+      <title>Modelling Coloured Images</title>
+      <link>http://pedroferreiradacosta.github.io/post/auto_encoder2/</link>
+      <pubDate>Mon, 19 Apr 2021 22:04:02 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/post/auto_encoder2/</guid>
+      <description>&lt;p&gt;This post is presented in &lt;a href=&#34;https://blog.usejournal.com/modelling-coloured-images-acd0ebde0102&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;noteworthy - the journal blog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Hi everybody! Today, we will continue the series about autoregressive models.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;&lt;strong&gt;Summary&lt;/strong&gt;&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Autoregressive models — PixelCNN&lt;/li&gt;
+&lt;li&gt;Modelling coloured images&lt;/li&gt;
+&lt;li&gt;PixelCNN’s blind spot in the receptive field&lt;/li&gt;
+&lt;li&gt;Fixing the blind spot — Gated PixelCNN&lt;/li&gt;
+&lt;li&gt;Conditional generation with Gated PixelCNN&lt;/li&gt;
+&lt;li&gt;Gated PixelCNN with cropped convolutions&lt;/li&gt;
+&lt;li&gt;Improving performance — PixelCNN++&lt;/li&gt;
+&lt;li&gt;Improving sampling time — Fast PixelCNN++&lt;/li&gt;
+&lt;li&gt;Using attention mechanisms — PixelSNAIL&lt;/li&gt;
+&lt;li&gt;Generating Diverse High-Fidelity Images — VQ-VAE 2&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For each topic, we implemented the models that are available in &lt;a href=&#34;https://github.com/Mind-the-Pineapple/Autoregressive-models&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In our previous post, we described an Autoregressive model for grayscale images, which only have one channel. In this post, we will talk about how to model images with multiples channels, such as RGB images. Let’s start!&lt;/p&gt;
+&lt;p&gt;The code for this topic can be found &lt;a href=&#34;https://github.com/Mind-the-Pineapple/Autoregressive-models&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;in this link&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;&lt;strong&gt;Introduction&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;As we discussed in our previous post, autoregressive generative models generate data from the product of conditional distributions, meaning that they depend on the previous pixels. So, to train the PixelCNN, we need to impose an ordering on the pixels of the generated image (e.g., from top to bottom and from left to right). To hide “future” pixels in convolutional operations, we mask the convolutional layers to ignore the information coming after the already predicted pixels. The first layer of the model should not have access to the pixel of interest of the input image, so we zero out the central pixel in the mask (we call this Mask A). But in the subsequent layers, the central pixel in the mask is already ignoring the pixel of interest of the input image, so it shouldn’t be zeroed out, so we use a Mask B. When dealing with images with more than one channel, such as coloured images which have three colour channels, which masks should we be using?&lt;/p&gt;
+&lt;h2 id=&#34;coloured-images&#34;&gt;&lt;strong&gt;Coloured Images&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Coloured images are composed of three channels, Red, Green and Blue (RGB). The different colour channels can also be called sub-pixels. Each sub-pixel is not independent of the others as they compose a congruent image when combined. It is, therefore, necessary to order the sub-pixels so that we can process them sequentially and account for previous sub-pixels when predicting the next one, just as we do for the pixels. The masks need to be constructed to ensure that the prediction of a pixel is not a function of its input value.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;Image1&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Following the original paper, we choose to order the sub-pixels from R → G → B. In the first convolutional layer, we use Mask A where the R channel will have only access to the information of the previous pixels, which we call context, the G channel will have access to the context and the R channel, and finally, the B channel will have access to the context and both R and G channel. In the following convolutional layers, the central pixel of the previous convolutional layer has not ‘seen’ the input’s central pixel. So, the central sub-pixel does not need to be zeroed out. This means that in Mask B, the R channel has access to the context and the previous layer’s R channel. The G channel has access to the context plus the R and G channel and the B channel will have access to the context and the three channels.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image2.png&#34; alt=&#34;Image2&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Here we present a snippet showing how to build the masks for images with more than one channel. When the mask is connecting a channel of the current layer (i) that is a later order channel than the previous layer channel (j) and we zero out the central pixel. For mask A, we also zero out the central pixel when the current layer is connecting the same channel in the previous layer.&lt;/p&gt;
+&lt;p&gt;The network architecture we used is similar to the one presented for one-channel generative models, following Oord et al. 2016 implementation with 15 residual blocks and was presented on our &lt;a href=&#34;https://towardsdatascience.com/autoregressive-models-pixelcnn-e30734ede0c1&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;first blog post&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;inference&#34;&gt;&lt;strong&gt;Inference&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;When we are inferring coloured images, we have to predict three times more values than for one-channel images. This makes training the model more challenging. Here we trained our PixelCNN using the CIFAR10 dataset, so following Andrej Karpathy’s &lt;a href=&#34;http://karpathy.github.io/2019/04/25/recipe/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;recipe for training neural networks&lt;/a&gt;, we started by overfitting the model to the first two training set images.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image3.png&#34; alt=&#34;Image3&#34;&gt;&lt;/p&gt;
+&lt;p&gt;So far, so good. After 10 epochs the model had already learned to mimic exactly the training set. But when we try to predict the next pixels of an occluded image that the model hasn’t seen yet, it does a poor job of completing the picture. This is expected as the model only learned to replicate the two examples it was shown.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Image4&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Next, we trained our PixelCNN for 20 epochs using 50000 training images example to make our model learn the natural images.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image5.png&#34; alt=&#34;Image5&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Now our results were less than brilliant. Despite generating interesting landscapes, they don’t seem to be learning the structure of the natural images they were trained on.&lt;/p&gt;
+&lt;p&gt;In future posts, we are going to explore reasons behind the ineffectiveness — like the receptive field’s blind spot, and we are going to learn new techniques to improve on the quality of the generated images. Until then, we can simplify the problem by quantising the CIFAR10 images from their original 256 intensity values per sub-pixel to just 8 intensity values per sub-pixel. We trained the same model for 20 epochs and show how the generated image is evolving along epochs.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image6.png&#34; alt=&#34;Image6&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The images generated in the final epochs already has a natural combination of colours. It also does not look like images in the training data, so it is learning the data manifold distribution. We can now see what images the model generates and how it predicts occluded images, just as in the previous case.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image7.png&#34; alt=&#34;Image7&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image8.png&#34; alt=&#34;Image8&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;It’s a challenge to train a PixelCNN to predict coloured figures. Although reducing the number of pixel intensity levels from 256 to 8 improved the results, the generated images were still not ideal. We briefly mentioned during the text that the performance could be improved by fixing the blind spot problem. So in the next two blog post, we will first introduce what is the blind spot and then we will show how we can fix it. So, stay tuned!&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;&lt;strong&gt;References&lt;/strong&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://bjlkeng.github.io/posts/pixelcnn/&#34;&gt;http://bjlkeng.github.io/posts/pixelcnn/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/bjlkeng/sandbox/blob/master/notebooks/pixel_cnn/pixelcnn_helpers.py&#34;&gt;https://github.com/bjlkeng/sandbox/blob/master/notebooks/pixel_cnn/pixelcnn_helpers.py&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://sergeiturukin.com/2017/02/22/pixelcnn.html&#34;&gt;http://sergeiturukin.com/2017/02/22/pixelcnn.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rampage644/wavenet/blob/master/wavenet/models.py&#34;&gt;https://github.com/rampage644/wavenet/blob/master/wavenet/models.py&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tensorflow/magenta/blob/master/magenta/reviews/pixelrnn.md&#34;&gt;https://github.com/tensorflow/magenta/blob/master/magenta/reviews/pixelrnn.md&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Building new methods with Bayesian Optimization</title>
+      <link>http://pedroferreiradacosta.github.io/project/bayesian-optimization/</link>
+      <pubDate>Sat, 03 Apr 2021 15:44:41 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/bayesian-optimization/</guid>
+      <description>&lt;p&gt;Bayesian Optimization is an efficient algorithm for sampling unknown costly functions to find its optimal value. It does so, by trading-off between exploitation and exploration through the use of an acquisition function and it requires a minimal number of samples. In neuroscience research, hypothesis testing is extremely costly (and exploration analyses has lead to bad science practices [ &lt;a href=&#34;https://www.deborahapthorp.com/courses/replicability/topic_8/readings/Maxwell2015.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;1&lt;/a&gt; ] ).&lt;/p&gt;
+&lt;p&gt;In my PhD research, one of my main focuses is to build convenient tools that empower the researcher to automatically navigate different hypothesis to solve a problem. I do so, by tackling 2 fields of research:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Building a novel AutoML algorithm that organizes the configuration space of ML predictors borrowing from Collaborative Filtering research.&lt;/li&gt;
+&lt;li&gt;Using Generative Adersarial Networks (GANs) to build semantically disentangled spaces of faces to optimize individual response.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The 2 sub-projects are detailed below.&lt;/p&gt;
+&lt;hr&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;ModelZoom&lt;/b&gt;&lt;br&gt;
+&lt;i&gt;A data-driven approach for AutoML&lt;/i&gt;&lt;/summary&gt;
+&lt;br&gt;
+ModelZoom is an AutoML tool that leverages the organization of the configurational space of pipelines to maximise information of each sampled pipeline. The configurational space is built by distilling meta-data from each single pipeline prediction on a number of dataset. The information is reduced from very high-dimensions to a low-dimensional configurational space using techniques from Collaborative Filtering.
+&lt;p&gt;This Euclidean space is used to maximise information obtained from sampling a given pipeline by assuming the correlation of prediction of neighbouring pipelines.&lt;/p&gt;
+&lt;p&gt;This work is currently under review for publication and was presented at the &lt;a href=&#34;http://mlss.tuebingen.mpg.de/2020/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Machine Learning Summer School 2020 (MLSS2020)&lt;/a&gt;. The video presentation can be accessed below.&lt;/p&gt;
+&lt;iframe src=&#34;https://drive.google.com/file/d/1YoWJBJcdJYUKWhz3qntTy37ZmVhlNy8K/preview&#34; width=&#34;640&#34; height=&#34;480&#34;&gt;&lt;/iframe&gt;
+&lt;!-- 
+ModelZoom paper
+
+Code
+
+Algorithm download
+
+Post link (towards datascience?) --&gt;
+&lt;/details&gt;
+&lt;hr&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;FaceFitOpt&lt;/b&gt;&lt;br&gt;
+&lt;i&gt;Optimizing neural data over facial stimuli&lt;/i&gt;&lt;/summary&gt;
+&lt;p&gt;&lt;img src=&#34;facefitopt.png&#34; alt=&#34;Facefitopt - optimizing over neural data&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In this project we use Bayesian optimization to guide human neural and behavioural responses to facial stimuli in order to maximise different target metrics. The space of facial stimuli is organized by manipulating a GAN latent space trained on faces (FFHQ). In this project we present results from a web-based proof-of-principle study, where participants rated images of themselves generated via performing Bayesian optimization over the latent space of a GAN. We show how the algorithm can efficiently locate an individual&amp;rsquo;s optimal face while mapping out their response across different semantic transformations of a face; inter-individual analyses suggest how the approach can provide rich information about individual differences in face processing.&lt;/p&gt;
+&lt;p&gt;This work was published and presented at &lt;a href=&#34;https://sites.google.com/view/automl2020/home&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ICML@AutoML workshop&lt;/a&gt;. The oral presentation can be accessed below.&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.automl.org/wp-content/uploads/2020/07/AutoML_2020_paper_58.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/PedroFerreiradaCosta/FaceFitOpt&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://colab.research.google.com/github/PedroFerreiradaCosta/FaceFitOpt/blob/master/FaceFitOpt_Github.ipynb&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-google  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Colab&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.automl.org/wp-content/uploads/2020/07/AutoML_2020_paper_58_poster.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-chalkboard  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Poster&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://slideslive.com/38930665&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-video  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Video&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;presentation-embed-38930665&#34;&gt;&lt;/div&gt;
+&lt;script src=&#39;https://slideslive.com/embed_presentation.js&#39;&gt;&lt;/script&gt;
+&lt;script&gt;
+    embed = new SlidesLiveEmbed(&#39;presentation-embed-38930665&#39;, {
+        presentationId: &#39;38930665&#39;,
+        autoPlay: false, // change to true to autoplay the embedded presentation
+        verticalEnabled: true
+    });
+&lt;/script&gt;
+&lt;br&gt;
+A second part of the project is to build a tool that leverages FaceFitOpt (Bayesian optimization and GANs) with real-time EEG to target a biomarkers ERP (event-related potential). This paper is currently under review.
+&lt;!-- FaceFitOpt paper (ICML)
+
+Video da apresentacao
+
+Slides
+
+SI.NeuroImage Paper
+
+Code (toolbox)
+
+Rianne&#39;s paper (adults)
+ --&gt;
+&lt;/details&gt;
+&lt;hr&gt;
+&lt;!-- 
+```diff
+  &#34;scripts&#34;: {
+    &#34;size&#34;: &#34;size-limit&#34;,
+-   &#34;test&#34;: &#34;jest &amp;&amp; eslint .&#34;
++   &#34;test&#34;: &#34;jest &amp;&amp; eslint . &amp;&amp; npm run size&#34;
+  }
+```
+
+
+&lt;p align=&#34;center&#34;&gt;
+  &lt;a href=&#34;#key-features&#34;&gt;Key Features&lt;/a&gt; •
+  &lt;a href=&#34;#how-to-use&#34;&gt;How To Use&lt;/a&gt; •
+  &lt;a href=&#34;#download&#34;&gt;Download&lt;/a&gt; •
+  &lt;a href=&#34;#credits&#34;&gt;Credits&lt;/a&gt; •
+  &lt;a href=&#34;#related&#34;&gt;Related&lt;/a&gt; •
+  &lt;a href=&#34;#license&#34;&gt;License&lt;/a&gt;
+&lt;/p&gt;
+
+ --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Normative Modelling in Psychiatry</title>
+      <link>http://pedroferreiradacosta.github.io/project/normative-modelling/</link>
+      <pubDate>Sat, 03 Apr 2021 15:44:07 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/normative-modelling/</guid>
+      <description>&lt;div style=&#34;text-align: justify&#34;&gt;
+&lt;p&gt;It is challenging to successfully train deep learning classifiers when the researcher only has access to small datasets or when the number of features of the input data is large. Both of these are the case for neuroimaging data. It is rare to find datasets with more than a couple thousand examples and this number is even lower for datasets of specific brain disorders.
+One different approach that bypasses this issue is building normative models of the brain and measure these disorders as specific out-of-distribution examples  in a process of anomaly detection. One effective way to build normative models is using auto-regressors, that learn to map inputs to outputs while reducing the data in a middle bottleneck layer. This leads to the model reducing the large feature number of the data to a more manageable number that can be studied as a common distribution.&lt;/p&gt;
+&lt;p&gt;In a first project I contributed to, we developed an adversarial auto-encoder to distinguish mild-cognitive development and Alzheimer&amp;rsquo;s disease and compared the results to classical predicitve models working on the original data.&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.biorxiv.org/content/10.1101/2020.02.10.931824v1.full.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/Warvito/Normative-modelling-using-deep-autoencoders&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code &lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In a second project, we are using state-of-the-art VQVAEs to reduce brain data into a quantized latent space and using transformers to measure the likelihood of the given distribuiton of the data. This is being used to identify psychiatric disorders. This work is still in development&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Modelling Behaviour</title>
+      <link>http://pedroferreiradacosta.github.io/project/modelling-behaviour/</link>
+      <pubDate>Thu, 02 Apr 2020 15:43:22 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/modelling-behaviour/</guid>
+      <description>&lt;div style=&#34;text-align: justify&#34;&gt;
+The relationship between the brain and cognition remains unclear, despite several decades of functional neuroimaging research. One limitation is that the cognitive processes we attempt to match to brain activity are taken from psychological constructs derived in a somewhat ad hoc manner. This project took a different approach, taking advantage of developments with artificial neural networks (ANNs) to learn shared mechanisms. The purpose was to evaluate the execution mechanisms between multiple cognitive tasks without relying on predefined cognitive domains. Therefore, a Recurrent Neural Network was developed to perform six cognitive tasks with an accuracy of 93%, that tapped on the processes of reaction, inhibition and working memory. With regard to the obtained model, it was tested if the mechanism provides a good explanation for the activation patterns in the brain regions previously associated to the cognitive processes. Although comparisons between the model’s activations and real brain data bared little similarities, the model’s mechanisms expressed an effective system of interpreting each task. It was clear, by analysis of the model’s interpretation of the input dataset, that the concept of task and moment of reaction were important factors for the correct solution. From the study of node variation along trials, one stood out (unit 28) by displaying a behaviour similar to inhibition control in biological systems. This work intended to provide novel insights into both brain and cognition, suggesting a potential parallelism between the artificial model and the biological processes. This perspective can contribute to a clearer interpretation of the cognitive processes.
+&lt;br&gt;&lt;br&gt;
+&lt;p&gt;This work was developed for my MSc thesis at the C3NL in Imperial College London. I presented this work at the Conference for Computational Neuroscience.&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://pedroferreiradacosta.github.io/files/daCosta_Master_thesis.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-book  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Thesis&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://ccneuro.org/2019/proceedings/0000272.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/PedroFerreiradaCosta/Solving-Cognitive-Tasks-w-LSTMs&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Bayesian Optimization for real-time, automatic design of face stimuli in human-centred research</title>
+      <link>http://pedroferreiradacosta.github.io/publication/da-costa-2020/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/da-costa-2020/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Normative modelling using deep autoencoders: a multi-cohort study on mild cognitive impairment and Alzheimer&#39;s disease</title>
+      <link>http://pedroferreiradacosta.github.io/publication/pinaya-2020/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/pinaya-2020/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Elucidating Cognitive Processes Using LSTMs</title>
+      <link>http://pedroferreiradacosta.github.io/publication/da-costa-2019/</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/da-costa-2019/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Application of Artificial Neural Networks for modelling cognitive dimensions</title>
+      <link>http://pedroferreiradacosta.github.io/publication/da-costa-2018/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/da-costa-2018/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

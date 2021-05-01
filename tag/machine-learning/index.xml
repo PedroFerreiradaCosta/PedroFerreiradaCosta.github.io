@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Machine Learning | Pedro F da Costa</title>
+    <link>http://pedroferreiradacosta.github.io/tag/machine-learning/</link>
+      <atom:link href="http://pedroferreiradacosta.github.io/tag/machine-learning/index.xml" rel="self" type="application/rss+xml" />
+    <description>Machine Learning</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2021 Pedro F da Costa</copyright><lastBuildDate>Sat, 03 Apr 2021 15:44:41 +0100</lastBuildDate>
+    <image>
+      <url>http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Machine Learning</title>
+      <link>http://pedroferreiradacosta.github.io/tag/machine-learning/</link>
+    </image>
+    
+    <item>
+      <title>Building new methods with Bayesian Optimization</title>
+      <link>http://pedroferreiradacosta.github.io/project/bayesian-optimization/</link>
+      <pubDate>Sat, 03 Apr 2021 15:44:41 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/bayesian-optimization/</guid>
+      <description>&lt;p&gt;Bayesian Optimization is an efficient algorithm for sampling unknown costly functions to find its optimal value. It does so, by trading-off between exploitation and exploration through the use of an acquisition function and it requires a minimal number of samples. In neuroscience research, hypothesis testing is extremely costly (and exploration analyses has lead to bad science practices [ &lt;a href=&#34;https://www.deborahapthorp.com/courses/replicability/topic_8/readings/Maxwell2015.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;1&lt;/a&gt; ] ).&lt;/p&gt;
+&lt;p&gt;In my PhD research, one of my main focuses is to build convenient tools that empower the researcher to automatically navigate different hypothesis to solve a problem. I do so, by tackling 2 fields of research:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Building a novel AutoML algorithm that organizes the configuration space of ML predictors borrowing from Collaborative Filtering research.&lt;/li&gt;
+&lt;li&gt;Using Generative Adersarial Networks (GANs) to build semantically disentangled spaces of faces to optimize individual response.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The 2 sub-projects are detailed below.&lt;/p&gt;
+&lt;hr&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;ModelZoom&lt;/b&gt;&lt;br&gt;
+&lt;i&gt;A data-driven approach for AutoML&lt;/i&gt;&lt;/summary&gt;
+&lt;br&gt;
+ModelZoom is an AutoML tool that leverages the organization of the configurational space of pipelines to maximise information of each sampled pipeline. The configurational space is built by distilling meta-data from each single pipeline prediction on a number of dataset. The information is reduced from very high-dimensions to a low-dimensional configurational space using techniques from Collaborative Filtering.
+&lt;p&gt;This Euclidean space is used to maximise information obtained from sampling a given pipeline by assuming the correlation of prediction of neighbouring pipelines.&lt;/p&gt;
+&lt;p&gt;This work is currently under review for publication and was presented at the &lt;a href=&#34;http://mlss.tuebingen.mpg.de/2020/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Machine Learning Summer School 2020 (MLSS2020)&lt;/a&gt;. The video presentation can be accessed below.&lt;/p&gt;
+&lt;iframe src=&#34;https://drive.google.com/file/d/1YoWJBJcdJYUKWhz3qntTy37ZmVhlNy8K/preview&#34; width=&#34;640&#34; height=&#34;480&#34;&gt;&lt;/iframe&gt;
+&lt;!-- 
+ModelZoom paper
+
+Code
+
+Algorithm download
+
+Post link (towards datascience?) --&gt;
+&lt;/details&gt;
+&lt;hr&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;FaceFitOpt&lt;/b&gt;&lt;br&gt;
+&lt;i&gt;Optimizing neural data over facial stimuli&lt;/i&gt;&lt;/summary&gt;
+&lt;p&gt;&lt;img src=&#34;facefitopt.png&#34; alt=&#34;Facefitopt - optimizing over neural data&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In this project we use Bayesian optimization to guide human neural and behavioural responses to facial stimuli in order to maximise different target metrics. The space of facial stimuli is organized by manipulating a GAN latent space trained on faces (FFHQ). In this project we present results from a web-based proof-of-principle study, where participants rated images of themselves generated via performing Bayesian optimization over the latent space of a GAN. We show how the algorithm can efficiently locate an individual&amp;rsquo;s optimal face while mapping out their response across different semantic transformations of a face; inter-individual analyses suggest how the approach can provide rich information about individual differences in face processing.&lt;/p&gt;
+&lt;p&gt;This work was published and presented at &lt;a href=&#34;https://sites.google.com/view/automl2020/home&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ICML@AutoML workshop&lt;/a&gt;. The oral presentation can be accessed below.&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.automl.org/wp-content/uploads/2020/07/AutoML_2020_paper_58.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/PedroFerreiradaCosta/FaceFitOpt&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://colab.research.google.com/github/PedroFerreiradaCosta/FaceFitOpt/blob/master/FaceFitOpt_Github.ipynb&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-google  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Colab&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.automl.org/wp-content/uploads/2020/07/AutoML_2020_paper_58_poster.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-chalkboard  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Poster&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://slideslive.com/38930665&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-video  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Video&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;presentation-embed-38930665&#34;&gt;&lt;/div&gt;
+&lt;script src=&#39;https://slideslive.com/embed_presentation.js&#39;&gt;&lt;/script&gt;
+&lt;script&gt;
+    embed = new SlidesLiveEmbed(&#39;presentation-embed-38930665&#39;, {
+        presentationId: &#39;38930665&#39;,
+        autoPlay: false, // change to true to autoplay the embedded presentation
+        verticalEnabled: true
+    });
+&lt;/script&gt;
+&lt;br&gt;
+A second part of the project is to build a tool that leverages FaceFitOpt (Bayesian optimization and GANs) with real-time EEG to target a biomarkers ERP (event-related potential). This paper is currently under review.
+&lt;!-- FaceFitOpt paper (ICML)
+
+Video da apresentacao
+
+Slides
+
+SI.NeuroImage Paper
+
+Code (toolbox)
+
+Rianne&#39;s paper (adults)
+ --&gt;
+&lt;/details&gt;
+&lt;hr&gt;
+&lt;!-- 
+```diff
+  &#34;scripts&#34;: {
+    &#34;size&#34;: &#34;size-limit&#34;,
+-   &#34;test&#34;: &#34;jest &amp;&amp; eslint .&#34;
++   &#34;test&#34;: &#34;jest &amp;&amp; eslint . &amp;&amp; npm run size&#34;
+  }
+```
+
+
+&lt;p align=&#34;center&#34;&gt;
+  &lt;a href=&#34;#key-features&#34;&gt;Key Features&lt;/a&gt; •
+  &lt;a href=&#34;#how-to-use&#34;&gt;How To Use&lt;/a&gt; •
+  &lt;a href=&#34;#download&#34;&gt;Download&lt;/a&gt; •
+  &lt;a href=&#34;#credits&#34;&gt;Credits&lt;/a&gt; •
+  &lt;a href=&#34;#related&#34;&gt;Related&lt;/a&gt; •
+  &lt;a href=&#34;#license&#34;&gt;License&lt;/a&gt;
+&lt;/p&gt;
+
+ --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Relevance Vector Machine</title>
+      <link>http://pedroferreiradacosta.github.io/project/sklearn-rvm/</link>
+      <pubDate>Sat, 03 Apr 2021 15:43:49 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/sklearn-rvm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Brain-Age Problem</title>
+      <link>http://pedroferreiradacosta.github.io/project/brain-age-problem/</link>
+      <pubDate>Thu, 01 Apr 2021 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/brain-age-problem/</guid>
+      <description>&lt;div style=&#34;text-align: justify&#34;&gt;
+The Brain Age problem is a standard example of the application of machine learning to Neuroimaging research. It consists on training predictors of age based solely on brain MRI scans. This is possible because the brain changes as we age. It also allows us to identify brains that are &#39;aging&#39; faster than the expected - a biomarker for disorders such as Alzheimer&#39;s. In my research, I explored the use of classical machine learning and genetic algorithms to solve this problem. 
+&lt;p&gt;Despite the gain in popularity of deep learning methods across different fields (including neuroscience), it is still an open question if its performance can overcome classical methods in brain data, where the number of features is high and the number of samples is low. As deep learning methods have a higher tendency to overfit, classical machine learning methods such as Support Vector Machines, Relevance Vector Machines and Multiple Regressions have an important role in neuroscience research.&lt;/p&gt;
+&lt;p&gt;To test this point, I participated in an international competition to build brain-age models - Predictive Analytics Competition (PAC) 2019 - using only shallow machine learning models. Out of the 274 participants, our team finished in the top-10 most accurate models using an ensemble of shallow models. Our methods and approach are detailed in our paper:
+&lt;img src=&#34;paper1.png&#34; alt=&#34;Brain-Age Prediction Using Shallow Machine Learning: Predictive Analytics Competition 2019&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.frontiersin.org/articles/10.3389/fpsyt.2020.604478/full&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/Mind-the-Pineapple/mind-the-gap&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://web.archive.org/web/20200214101600/https://www.photon-ai.com/pac2019&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-globe  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Website&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In another study, we showed that there is no statistically significant difference between Support Vector Regression (SVM), Gaussian Process Regression (GPR) and Relevance Vector Regression (RVM), and that overall, the type of input data has a larger impact into the accuracy of the trained predictor.
+&lt;img src=&#34;paper2.png&#34; alt=&#34;Brain age prediction: A comparison between machine learning models usnig region- and voxel-based morphometric data&#34;&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://onlinelibrary.wiley.com/doi/10.1002/hbm.25368&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/MLMH-Lab/Brain-age-prediction&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Brain age prediction: A comparison between machine learning models using region- and voxel-based morphometric data</title>
+      <link>http://pedroferreiradacosta.github.io/publication/baecker-2021/</link>
+      <pubDate>Fri, 01 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/baecker-2021/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Bayesian Optimization for real-time, automatic design of face stimuli in human-centred research</title>
+      <link>http://pedroferreiradacosta.github.io/publication/da-costa-2020/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/da-costa-2020/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Brain-Age Prediction Using Shallow Machine Learning: Predictive Analytics Competition 2019</title>
+      <link>http://pedroferreiradacosta.github.io/publication/da-costa-2020-a/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/da-costa-2020-a/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

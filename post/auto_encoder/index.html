@@ -1,0 +1,1398 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.1.0 for Hugo" />
+  
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Pedro F da Costa" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="This post is presented in towardsdatascience.com.
+Hi everybody! This is our first post of a series about modern autoregressive models. Here are the topics we are going to cover in this series:" />
+
+  
+  <link rel="alternate" hreflang="en-us" href="http://pedroferreiradacosta.github.io/post/auto_encoder/" />
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    <meta name="theme-color" content="#4caf50" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.0/css/academicons.min.css" integrity="sha512-W4yqoT1+8NLkinBLBZko+dFB2ZbHsYLDdr50VElllRcNt2Q4/GSs6u71UHKxB7S6JEMCp5Ve4xjh3eGQl/HRvg==" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha256-FMvZuGapsJLjouA6k7Eo2lusoAX9i0ShlWFG6qt7SLc=" crossorigin="anonymous">
+
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.fdf1e04434c5a4fc6a943a003775415e.css" />
+
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-154348233-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'UA-154348233-2', {});
+  gtag('set', {'cookie_flags': 'SameSite=None;Secure'});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/index.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_180x180_fill_lanczos_center_2.png" />
+
+  <link rel="canonical" href="http://pedroferreiradacosta.github.io/post/auto_encoder/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary" />
+  
+  <meta property="og:site_name" content="Pedro F da Costa" />
+  <meta property="og:url" content="http://pedroferreiradacosta.github.io/post/auto_encoder/" />
+  <meta property="og:title" content="Autoregressive Models — PixelCNN | Pedro F da Costa" />
+  <meta property="og:description" content="This post is presented in towardsdatascience.com.
+Hi everybody! This is our first post of a series about modern autoregressive models. Here are the topics we are going to cover in this series:" /><meta property="og:image" content="http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png" />
+    <meta property="twitter:image" content="http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2021-04-19T21:36:33&#43;01:00"
+      />
+    
+    <meta property="article:modified_time" content="2021-04-19T21:36:33&#43;01:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://pedroferreiradacosta.github.io/post/auto_encoder/"
+  },
+  "headline": "Autoregressive Models — PixelCNN",
+  
+  "datePublished": "2021-04-19T21:36:33+01:00",
+  "dateModified": "2021-04-19T21:36:33+01:00",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Walter Hugo Lopez Pinaya"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Pedro F da Costa",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "This post is presented in towardsdatascience.com.\nHi everybody! This is our first post of a series about modern autoregressive models. Here are the topics we are going to cover in this series:"
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Autoregressive Models — PixelCNN | Pedro F da Costa</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="1ec8f8dac3c8a5de4e0e34e759d9080d" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.226a9011996d125bf3fe4a5f22353a49.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container-xl">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Pedro F da Costa</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Pedro F da Costa</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>Home</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#publications"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/media/resume.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+      
+      
+        
+      
+
+      
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      
+      <li class="nav-item dropdown theme-dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-label="Display preferences">
+          <i class="fas fa-moon" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item js-set-theme-light">
+            <span>Light</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-dark">
+            <span>Dark</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-auto">
+            <span>Automatic</span>
+          </a>
+        </div>
+      </li>
+      
+
+      
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Autoregressive Models — PixelCNN</h1>
+
+  
+  <p class="page-subtitle">Creating digits with deep generative models!</p>
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  <span >
+      Walter Hugo Lopez Pinaya</span>, <span >
+      Pedro F. da Costa</span>, <span >
+      Jessica Dafflon</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Apr 19, 2021
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    11 min read
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+
+</div>
+
+    
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p>This post is presented in <a href="https://towardsdatascience.com/autoregressive-models-pixelcnn-e30734ede0c1" target="_blank" rel="noopener">towardsdatascience.com</a>.</p>
+<p>Hi everybody! This is our first post of a series about modern autoregressive models. Here are the topics we are going to cover in this series:</p>
+<p><strong>Summary</strong></p>
+<ol>
+<li>Autoregressive models — PixelCNN</li>
+<li>Modelling coloured images</li>
+<li>PixelCNN’s blind spot in the receptive field</li>
+<li>Fixing the blind spot — Gated PixelCNN</li>
+<li>Conditional generation with Gated PixelCNN</li>
+<li>Gated PixelCNN with cropped convolutions</li>
+<li>Improving performance — PixelCNN++</li>
+<li>Improving sampling time — Fast PixelCNN++</li>
+<li>Using attention mechanisms — PixelSNAIL</li>
+<li>Generating Diverse High-Fidelity Images — VQ-VAE 2</li>
+</ol>
+<p>The implementation for each one of these topics can be found in <a href="https://github.com/Mind-the-Pineapple/Autoregressive-models" target="_blank" rel="noopener">this repository</a>.</p>
+<p>Let’s start!</p>
+<h2 id="introduction"><strong>Introduction</strong></h2>
+<p>Generative models are an important class of models from unsupervised learning that have been receiving a lot of attention in these last few years. These can be defined as a class of models whose goal is to learn how to generate new samples that appear to be from the same dataset as the training data. During the training phase, a generative model tries to solve the core task of <strong>density estimation</strong>. In density estimation, our model learns to construct an estimate — <em>pmodel(x)</em> — as similar as possible to the unobservable probability density function — <em>pdata(x)</em>. It is important to mention that the generative model should be able to make up new samples from the distribution, and not just copy and paste existing ones. Once we have successfully trained our model, it can be used for a wide variety of applications that range from forms of reconstruction such as image inpainting, colourization, and super-resolution, to the generation of artwork.</p>
+<p><img src="image1.png" alt="Image1"></p>
+<p>There are a few different approaches that we can use to perform this probability density estimation, such as:</p>
+<ol>
+<li><strong>Generative Adversarial Networks (GANs)</strong> use an approach where the model performs an <em>implicit density estimation</em>. In this case, we train a model that can create samples from <em>pmodel(x)</em> without explicitly defining <em>pmodel(x)</em>; the model learns a stochastic procedure that generates data but does not provide knowledge of the probability of observations or specify a conditional log-likelihood function;</li>
+<li><strong>Variational autoencoders (VAE)</strong> use an <em>explicit density estimation</em> but define an intractable density function with latent variables that cannot be optimized directly. So, to train the model, we derive and optimize the lower bound of likelihood instead (<strong>approximate density</strong>); we optimize the log-likelihood of the data by maximizing the evidence lower bound (ELBO) (more details can be found <a href="https://www.cs.ubc.ca/~lsigal/532S_2018W2/Lecture13b.pdf" target="_blank" rel="noopener">here</a> and <a href="https://arxiv.org/abs/1906.02691" target="_blank" rel="noopener">here</a>);</li>
+<li><strong>Autoregressive (AR) models</strong> create an <em>explicit density</em> model that is tractable to maximize the likelihood of training data (<em>tractable density</em>). For this reason, with these methods, it is easy to compute the likelihood of data observation and to get an evaluation metric of the generative model.</li>
+</ol>
+<p>As we mentioned, the autoregressive is one practical approach that provides an explicit modelling of the likelihood function. However, to model data with several dimensions/features, autoregressive models need to impose some conditions. First, the input-space <em>X</em> needs to have a <strong>determining ordering</strong> for its features. That is why autoregressive models are normally used for time series that have an intrinsic sequence of time steps. However, they can be employed for images by defining, for example, that the pixels on the left come before the ones on the right, and the ones on top before the ones on the bottom. Second, to tractably model the joint distribution of the features in a data observation (<em>p(x)</em>), the autoregressive approach casts <em>p(x)</em> as a <strong>product of conditional distributions</strong>.</p>
+<p>Autoregressive models define the joint distribution using conditionals over each feature, given the values of the previous features. For example, the probability of a pixel from an image to have a specific intensity value is conditioned by the values of all previous pixels; and the probability of an image (the joint distribution of all pixels) is the combination of the probability of all its pixels. Therefore, autoregressive models use the chain rule to decompose the likelihood of the data sample x into a product of 1-dimensional distributions (equations below). The factorization turns the joint modelling problem into a sequence problem, where one learns to predict the next pixel given all the previously generated pixels.</p>
+<p><img src="image2.png" alt="Image2"></p>
+<p>These conditions (i.e. determining ordering and product of conditional distribution) are what mainly defines an autoregressive model.</p>
+<p>Now, the big challenge is to calculate these conditional likelihoods $p(x_{i}| x_{1}, …, x_{i-1})$. How can we define these complex distributions in an expressive model that is also tractable and scalable? One solution is to use universal approximators, like deep neural networks.</p>
+<h2 id="pixelcnn"><strong>PixelCNN</strong></h2>
+<p>DeepMind introduced PixelCNN in 2016 (<a href="https://arxiv.org/abs/1601.06759" target="_blank" rel="noopener">Oord et al., 2016</a>), and this model started one of the most promising families of autoregressive generative models. Since then it has been used to <a href="https://deepmind.com/blog/article/wavenet-generative-model-raw-audio" target="_blank" rel="noopener">generate speech</a>, <a href="https://arxiv.org/abs/1610.00527" target="_blank" rel="noopener">videos</a>, and <a href="https://arxiv.org/abs/1906.00446" target="_blank" rel="noopener">high-resolution pictures</a>.</p>
+<p><img src="image3.png" alt="Image3"></p>
+<p>PixelCNN is a deep neural network that captures the distribution of dependencies between pixels in its parameters. It sequentially generates one pixel at a time in an image along the two spatial dimensions.</p>
+<p><img src="image4.png" alt="Image4"></p>
+<p>Using convolution operations, PixelCNN can parallelly learn the distribution of all pixels in the image. However, when determining the probability of a specific pixel, the receptive field of a standard convolutional layer violates the sequential prediction of autoregressive models. When processing the information of a central pixel, the convolutional filter considers all the pixels around it to calculate the output feature map, not only the previous pixels. Masks are then adopted to block information flow from pixels not yet predicted.</p>
+<h2 id="masked-convolutional-layers"><strong>Masked convolutional layers</strong></h2>
+<p>Masking can be done by zeroing out all the pixels that should not be considered. In our implementation, a mask with the same size of the convolutional filter with values 1 and 0 was created. This mask was multiplied with the weight tensor before doing the convolution operation. In the PixelCNN, there are two types of masks:</p>
+<ul>
+<li><strong>Mask type A</strong>: this mask is applied only to the first convolutional layer. It restricts access to the pixel of interest by zeroing the central pixel in the mask. This way, we guarantee that the model will not access the pixel that it is about to predict (in red in the figure below).</li>
+<li><strong>Mask type B</strong>: This mask is applied to all the subsequent convolutional layers and relaxes the restrictions of mask A by allowing the connection from a pixel to itself. This is important in order to account for the pixel prediction of the first layer.</li>
+</ul>
+<p><img src="image5.png" alt="Image5"></p>
+<p>Here we present a snippet showing the implementation of the mask using the Tensorflow 2.0 framework.</p>
+<pre><code class="language-diff">class MaskedConv2D(keras.layers.Layer):
+    &quot;&quot;&quot;Convolutional layers with masks.
+
+    Convolutional layers with simple implementation of masks type A and B for
+    autoregressive models.
+
+    Arguments:
+    mask_type: one of `&quot;A&quot;` or `&quot;B&quot;.`
+    filters: Integer, the dimensionality of the output space
+        (i.e. the number of output filters in the convolution).
+    kernel_size: An integer or tuple/list of 2 integers, specifying the
+        height and width of the 2D convolution window.
+        Can be a single integer to specify the same value for
+        all spatial dimensions.
+    strides: An integer or tuple/list of 2 integers,
+        specifying the strides of the convolution along the height and width.
+        Can be a single integer to specify the same value for
+        all spatial dimensions.
+        Specifying any stride value != 1 is incompatible with specifying
+        any `dilation_rate` value != 1.
+    padding: one of `&quot;valid&quot;` or `&quot;same&quot;` (case-insensitive).
+    kernel_initializer: Initializer for the `kernel` weights matrix.
+    bias_initializer: Initializer for the bias vector.
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 mask_type,
+                 filters,
+                 kernel_size,
+                 strides=1,
+                 padding='same',
+                 kernel_initializer='glorot_uniform',
+                 bias_initializer='zeros'):
+        super(MaskedConv2D, self).__init__()
+
+        assert mask_type in {'A', 'B'}
+        self.mask_type = mask_type
+
+        self.filters = filters
+        self.kernel_size = kernel_size
+        self.strides = strides
+        self.padding = padding.upper()
+        self.kernel_initializer = initializers.get(kernel_initializer)
+        self.bias_initializer = initializers.get(bias_initializer)
+
+    def build(self, input_shape):
+        self.kernel = self.add_weight('kernel',
+                                      shape=(self.kernel_size,
+                                             self.kernel_size,
+                                             int(input_shape[-1]),
+                                             self.filters),
+                                      initializer=self.kernel_initializer,
+                                      trainable=True)
+
+        self.bias = self.add_weight('bias',
+                                    shape=(self.filters,),
+                                    initializer=self.bias_initializer,
+                                    trainable=True)
+
+        center = self.kernel_size // 2
+
+        mask = np.ones(self.kernel.shape, dtype=np.float32)
+        mask[center, center + (self.mask_type == 'B'):, :, :] = 0.
+        mask[center + 1:, :, :, :] = 0.
+
+        self.mask = tf.constant(mask, dtype=tf.float32, name='mask')
+
+    def call(self, input):
+        masked_kernel = tf.math.multiply(self.mask, self.kernel)
+        x = nn.conv2d(input,
+                      masked_kernel,
+                      strides=[1, self.strides, self.strides, 1],
+                      padding=self.padding)
+        x = nn.bias_add(x, self.bias)
+        return x
+  
+</code></pre>
+<h2 id="architecture"><strong>Architecture</strong></h2>
+<p>In Oord et al. 2016, the PixelCNN uses the following architecture: the first layer is a masked convolution (type A) with 7x7 filters. Then, 15 residuals blocks were used. Each block processes the data with a combination of 3x3 convolutional layers with mask type B and standard 1x1 convolutional layers. Between each convolutional layer, there is a non-linearity ReLU. Finally, the residual blocks also include a residual connection.</p>
+<p><img src="image6.png" alt="Image6"></p>
+<p>After the sequence of the blocks, the network has a chain of RELU-CONV-RELU-CONV layers using standard convolutional layers with 1x1 filters. Then, the output layer is a softmax layer which predicts the value among all possible values of a pixel. The output of the model has the same spatial format as the input image (because we want an output value for each pixel) times the number of possible values (for example, 256 intensity levels).
+Here we present a snippet showing the implementation of the network architecture using the Tensorflow 2.0 framework.</p>
+<pre><code class="language-diff">class ResidualBlock(keras.Model):
+    &quot;&quot;&quot;Residual blocks that compose pixelCNN
+
+    Blocks of layers with 3 convolutional layers and one residual connection.
+    Based on Figure 5 from [1] where h indicates number of filters.
+
+    Refs:
+    [1] - Oord, A. V. D., Kalchbrenner, N., &amp; Kavukcuoglu, K. (2016). Pixel
+     recurrent neural networks. arXiv preprint arXiv:1601.06759.
+    &quot;&quot;&quot;
+
+    def __init__(self, h):
+        super(ResidualBlock, self).__init__(name='')
+
+        self.conv2a = keras.layers.Conv2D(filters=h, kernel_size=1, strides=1)
+        self.conv2b = MaskedConv2D(mask_type='B', filters=h, kernel_size=3, strides=1)
+        self.conv2c = keras.layers.Conv2D(filters=2 * h, kernel_size=1, strides=1)
+
+    def call(self, input_tensor):
+        x = nn.relu(input_tensor)
+        x = self.conv2a(x)
+
+        x = nn.relu(x)
+        x = self.conv2b(x)
+
+        x = nn.relu(x)
+        x = self.conv2c(x)
+
+        x += input_tensor
+        return x
+        
+# Create PixelCNN model
+inputs = keras.layers.Input(shape=(height, width, n_channel))
+x = MaskedConv2D(mask_type='A', filters=128, kernel_size=7, strides=1)(inputs)
+
+for i in range(15):
+    x = ResidualBlock(h=64)(x)
+
+x = keras.layers.Activation(activation='relu')(x)
+x = keras.layers.Conv2D(filters=128, kernel_size=1, strides=1)(x)
+x = keras.layers.Activation(activation='relu')(x)
+x = keras.layers.Conv2D(filters=128, kernel_size=1, strides=1)(x)
+x = keras.layers.Conv2D(filters=q_levels, kernel_size=1, strides=1)(x)
+
+pixelcnn = keras.Model(inputs=inputs, outputs=x)
+</code></pre>
+<h2 id="preprocessing"><strong>Preprocessing</strong></h2>
+<p>The input values of the PixelCNN were scaled to be in the range of [0, 1]. During this preprocessing, it was possible to quantize the values of the pixels in a lower number of intensity levels. In our implementation, we first present the model trained with two intensity levels, and then with all the 256 levels. We notice that the model performed better in the data with fewer levels due to the lower problem complexity (less possible values to consider in the probability distributions of the pixels).</p>
+<p>The target data corresponded to categorical (integer) values indicating a pixel’s intensity.</p>
+<p><img src="image7.png" alt="Image7"></p>
+<h2 id="model-evaluation"><strong>Model evaluation</strong></h2>
+<p>PixelCNN has an easy method to train. The model learns its parameters by maximizing the likelihood of the training data.</p>
+<p><img src="image8.png" alt="Image8"></p>
+<p>As most optimization problems are defined as a minimization problem, a commonly used trick is to transform the training objective into the minimization of the negative log-likelihood (NLL).</p>
+<p><img src="image9.png" alt="Image9"></p>
+<p>Since $p(x_{i}|\theta)$ correspond to the probabilities outputted by the softmax layer, the NLL is equivalent to the cross-entropy loss function — a commonly used loss function in supervised learning. Also, NLL is a metric used to compare the performance between generative methods (using nats units or bits per pixel).</p>
+<h2 id="inference"><strong>Inference</strong></h2>
+<p>Since PixelCNN is an autoregressive model, inference happens to be sequential — we have to generate pixel by pixel. First, we generate an image by passing zeros to our model. It shouldn’t influence the very first pixel as its value is modelled to be independent of all the others. So, we perform forward pass and obtain its distribution. Given the distribution, we sample a value from a multinomial probability distribution. Then, we update our image with sampled pixel values, and we repeat this process until we have all pixel values generated. Here used a PixelCNN to generate samples after 150 epochs using the MNIST dataset. Each generated image had four levels of pixel intensity.</p>
+<p><img src="image10.png" alt="Image10"></p>
+<p>The same sampling process can be used with images partially occluded as starting point.</p>
+<p><img src="image11.png" alt="Image11"></p>
+<p>Now, we also tried to train or model to produce images with 256 levels of pixel intensity.</p>
+<p><img src="image12.png" alt="Image12"></p>
+<p>This sampling process is relatively slow when compared with other generative models (VAE and GANs), where all pixels are generated in one go. However, recent advances have used cached values to reduce the sampling time (Fast PixelCNN++, addressed in the next posts)</p>
+<h2 id="conclusion"><strong>Conclusion</strong></h2>
+<p>The advantage of the PixelCNN model is that the joint probability learning technique is tractable, and it can be learned using gradient descent. There is no approximation; we just try to predict each pixel value given all the previous pixel values. Since PixelCNN is trained by minimizing the negative log-likelihood, its training is more stable when compared with alternatives approaches (e.g. GANs — that requires to find the Nash equilibrium). However, as the generation of samples is sequential (pixel-by-pixel), the original PixelCNN struggles with scalability. In the next post, we will train a PixelCNN model in a dataset with RGB channels.</p>
+<h2 id="references"><strong>References</strong></h2>
+<ul>
+<li><a href="http://sergeiturukin.com/2017/02/22/pixelcnn.html">http://sergeiturukin.com/2017/02/22/pixelcnn.html</a></li>
+<li><a href="https://towardsdatascience.com/auto-regressive-generative-models-pixelrnn-pixelcnn-32d192911173">https://towardsdatascience.com/auto-regressive-generative-models-pixelrnn-pixelcnn-32d192911173</a></li>
+<li><a href="https://deepgenerativemodels.github.io/">https://deepgenerativemodels.github.io/</a></li>
+<li><a href="https://eigenfoo.xyz/deep-autoregressive-models/">https://eigenfoo.xyz/deep-autoregressive-models/</a></li>
+<li><a href="https://wiki.math.uwaterloo.ca/statwiki/index.php?title=STAT946F17/Conditional_Image_Generation_with_PixelCNN_Decoders">https://wiki.math.uwaterloo.ca/statwiki/index.php?title=STAT946F17/Conditional_Image_Generation_with_PixelCNN_Decoders</a></li>
+<li><a href="https://www.codeproject.com/Articles/5061271/PixelCNN-in-Autoregressive-Models">https://www.codeproject.com/Articles/5061271/PixelCNN-in-Autoregressive-Models</a></li>
+<li><a href="https://towardsdatascience.com/blind-spot-problem-in-pixelcnn-8c71592a14a">https://towardsdatascience.com/blind-spot-problem-in-pixelcnn-8c71592a14a</a></li>
+<li><a href="https://www.youtube.com/watch?v=5WoItGTWV54&amp;t=1165s">https://www.youtube.com/watch?v=5WoItGTWV54&amp;t=1165s</a></li>
+<li><a href="https://www.youtube.com/watch?v=R8fx2b8Asg0">https://www.youtube.com/watch?v=R8fx2b8Asg0</a></li>
+<li><a href="https://arxiv.org/pdf/1804.00779v1.pdf">https://arxiv.org/pdf/1804.00779v1.pdf</a></li>
+<li><a href="https://blog.evjang.com/2019/07/likelihood-model-tips.html">https://blog.evjang.com/2019/07/likelihood-model-tips.html</a></li>
+<li><a href="https://arxiv.org/abs/1810.01392">https://arxiv.org/abs/1810.01392</a></li>
+<li><a href="http://bjlkeng.github.io/posts/pixelcnn/">http://bjlkeng.github.io/posts/pixelcnn/</a></li>
+<li><a href="https://jrbtaylor.github.io/conditional-pixelcnn/">https://jrbtaylor.github.io/conditional-pixelcnn/</a></li>
+<li><a href="http://www.gatsby.ucl.ac.uk/~balaji/Understanding-GANs.pdf">http://www.gatsby.ucl.ac.uk/~balaji/Understanding-GANs.pdf</a></li>
+<li><a href="https://www.cs.ubc.ca/~lsigal/532S_2018W2/Lecture13b.pdf">https://www.cs.ubc.ca/~lsigal/532S_2018W2/Lecture13b.pdf</a></li>
+<li><a href="https://tinyclouds.org/residency/">https://tinyclouds.org/residency/</a></li>
+<li><a href="https://tensorflow.blog/2016/11/29/pixelcnn-1601-06759-summary/">https://tensorflow.blog/2016/11/29/pixelcnn-1601-06759-summary/</a></li>
+<li><a href="https://web.cs.hacettepe.edu.tr/~aykut/classes/spring2018/cmp784/slides/lec10-deep_generative_models-part-I_2.pdf">https://web.cs.hacettepe.edu.tr/~aykut/classes/spring2018/cmp784/slides/lec10-deep_generative_models-part-I_2.pdf</a></li>
+</ul>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/deep-learning/">Deep Learning</a>
+  
+  <a class="badge badge-light" href="/tag/autoregressive/">Autoregressive</a>
+  
+  <a class="badge badge-light" href="/tag/pixelcnn/">PixelCNN</a>
+  
+  <a class="badge badge-light" href="/tag/generative-models/">generative models</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=http://pedroferreiradacosta.github.io/post/auto_encoder/&amp;text=Autoregressive%20Models%20%e2%80%94%20PixelCNN" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=http://pedroferreiradacosta.github.io/post/auto_encoder/&amp;t=Autoregressive%20Models%20%e2%80%94%20PixelCNN" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Autoregressive%20Models%20%e2%80%94%20PixelCNN&amp;body=http://pedroferreiradacosta.github.io/post/auto_encoder/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=http://pedroferreiradacosta.github.io/post/auto_encoder/&amp;title=Autoregressive%20Models%20%e2%80%94%20PixelCNN" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Autoregressive%20Models%20%e2%80%94%20PixelCNN%20http://pedroferreiradacosta.github.io/post/auto_encoder/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=http://pedroferreiradacosta.github.io/post/auto_encoder/&amp;title=Autoregressive%20Models%20%e2%80%94%20PixelCNN" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+
+
+
+
+  
+    
+
+
+
+
+  
+    
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/post/auto_encoder2/">Modelling Coloured Images</a></li>
+      
+      <li><a href="/project/bayesian-optimization/">Building new methods with Bayesian Optimization</a></li>
+      
+      <li><a href="/project/normative-modelling/">Normative Modelling in Psychiatry</a></li>
+      
+      <li><a href="/publication/da-costa-2018/">Application of Artificial Neural Networks for modelling cognitive dimensions</a></li>
+      
+      <li><a href="/publication/pinaya-2020/">Normative modelling using deep autoencoders: a multi-cohort study on mild cognitive impairment and Alzheimer&#39;s disease</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+  
+
+  <p class="powered-by">
+    © 2021 Pedro F da Costa
+  </p>
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-modules" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js" integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin="anonymous"></script>
+
+      
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js" integrity="sha512-TDKKr+IvoqZnPzc3l35hdjpHD0m+b2EC2SrLEgKDRWpxf2rFCxemkgvJ5kfU48ip+Y+m2XVKyOCD85ybtlZDmw==" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/python.min.js"></script>
+        
+      
+
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    <script src="/js/bootstrap.bundle.min.6aed84840afc03ab4d5750157f69c120.js"></script>
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.b61a8f62b6e5c0cd322c8158c5b5dfb6.js"></script>
+
+    
+
+
+
+
+
+
+</body>
+</html>

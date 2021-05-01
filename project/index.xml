@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects | Pedro F da Costa</title>
+    <link>http://pedroferreiradacosta.github.io/project/</link>
+      <atom:link href="http://pedroferreiradacosta.github.io/project/index.xml" rel="self" type="application/rss+xml" />
+    <description>Projects</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2021 Pedro F da Costa</copyright><lastBuildDate>Sat, 03 Apr 2021 15:44:41 +0100</lastBuildDate>
+    <image>
+      <url>http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Projects</title>
+      <link>http://pedroferreiradacosta.github.io/project/</link>
+    </image>
+    
+    <item>
+      <title>Building new methods with Bayesian Optimization</title>
+      <link>http://pedroferreiradacosta.github.io/project/bayesian-optimization/</link>
+      <pubDate>Sat, 03 Apr 2021 15:44:41 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/bayesian-optimization/</guid>
+      <description>&lt;p&gt;Bayesian Optimization is an efficient algorithm for sampling unknown costly functions to find its optimal value. It does so, by trading-off between exploitation and exploration through the use of an acquisition function and it requires a minimal number of samples. In neuroscience research, hypothesis testing is extremely costly (and exploration analyses has lead to bad science practices [ &lt;a href=&#34;https://www.deborahapthorp.com/courses/replicability/topic_8/readings/Maxwell2015.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;1&lt;/a&gt; ] ).&lt;/p&gt;
+&lt;p&gt;In my PhD research, one of my main focuses is to build convenient tools that empower the researcher to automatically navigate different hypothesis to solve a problem. I do so, by tackling 2 fields of research:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Building a novel AutoML algorithm that organizes the configuration space of ML predictors borrowing from Collaborative Filtering research.&lt;/li&gt;
+&lt;li&gt;Using Generative Adersarial Networks (GANs) to build semantically disentangled spaces of faces to optimize individual response.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The 2 sub-projects are detailed below.&lt;/p&gt;
+&lt;hr&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;ModelZoom&lt;/b&gt;&lt;br&gt;
+&lt;i&gt;A data-driven approach for AutoML&lt;/i&gt;&lt;/summary&gt;
+&lt;br&gt;
+ModelZoom is an AutoML tool that leverages the organization of the configurational space of pipelines to maximise information of each sampled pipeline. The configurational space is built by distilling meta-data from each single pipeline prediction on a number of dataset. The information is reduced from very high-dimensions to a low-dimensional configurational space using techniques from Collaborative Filtering.
+&lt;p&gt;This Euclidean space is used to maximise information obtained from sampling a given pipeline by assuming the correlation of prediction of neighbouring pipelines.&lt;/p&gt;
+&lt;p&gt;This work is currently under review for publication and was presented at the &lt;a href=&#34;http://mlss.tuebingen.mpg.de/2020/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Machine Learning Summer School 2020 (MLSS2020)&lt;/a&gt;. The video presentation can be accessed below.&lt;/p&gt;
+&lt;iframe src=&#34;https://drive.google.com/file/d/1YoWJBJcdJYUKWhz3qntTy37ZmVhlNy8K/preview&#34; width=&#34;640&#34; height=&#34;480&#34;&gt;&lt;/iframe&gt;
+&lt;!-- 
+ModelZoom paper
+
+Code
+
+Algorithm download
+
+Post link (towards datascience?) --&gt;
+&lt;/details&gt;
+&lt;hr&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;FaceFitOpt&lt;/b&gt;&lt;br&gt;
+&lt;i&gt;Optimizing neural data over facial stimuli&lt;/i&gt;&lt;/summary&gt;
+&lt;p&gt;&lt;img src=&#34;facefitopt.png&#34; alt=&#34;Facefitopt - optimizing over neural data&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In this project we use Bayesian optimization to guide human neural and behavioural responses to facial stimuli in order to maximise different target metrics. The space of facial stimuli is organized by manipulating a GAN latent space trained on faces (FFHQ). In this project we present results from a web-based proof-of-principle study, where participants rated images of themselves generated via performing Bayesian optimization over the latent space of a GAN. We show how the algorithm can efficiently locate an individual&amp;rsquo;s optimal face while mapping out their response across different semantic transformations of a face; inter-individual analyses suggest how the approach can provide rich information about individual differences in face processing.&lt;/p&gt;
+&lt;p&gt;This work was published and presented at &lt;a href=&#34;https://sites.google.com/view/automl2020/home&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ICML@AutoML workshop&lt;/a&gt;. The oral presentation can be accessed below.&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.automl.org/wp-content/uploads/2020/07/AutoML_2020_paper_58.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/PedroFerreiradaCosta/FaceFitOpt&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://colab.research.google.com/github/PedroFerreiradaCosta/FaceFitOpt/blob/master/FaceFitOpt_Github.ipynb&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-google  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Colab&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.automl.org/wp-content/uploads/2020/07/AutoML_2020_paper_58_poster.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-chalkboard  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Poster&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://slideslive.com/38930665&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-video  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Video&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;presentation-embed-38930665&#34;&gt;&lt;/div&gt;
+&lt;script src=&#39;https://slideslive.com/embed_presentation.js&#39;&gt;&lt;/script&gt;
+&lt;script&gt;
+    embed = new SlidesLiveEmbed(&#39;presentation-embed-38930665&#39;, {
+        presentationId: &#39;38930665&#39;,
+        autoPlay: false, // change to true to autoplay the embedded presentation
+        verticalEnabled: true
+    });
+&lt;/script&gt;
+&lt;br&gt;
+A second part of the project is to build a tool that leverages FaceFitOpt (Bayesian optimization and GANs) with real-time EEG to target a biomarkers ERP (event-related potential). This paper is currently under review.
+&lt;!-- FaceFitOpt paper (ICML)
+
+Video da apresentacao
+
+Slides
+
+SI.NeuroImage Paper
+
+Code (toolbox)
+
+Rianne&#39;s paper (adults)
+ --&gt;
+&lt;/details&gt;
+&lt;hr&gt;
+&lt;!-- 
+```diff
+  &#34;scripts&#34;: {
+    &#34;size&#34;: &#34;size-limit&#34;,
+-   &#34;test&#34;: &#34;jest &amp;&amp; eslint .&#34;
++   &#34;test&#34;: &#34;jest &amp;&amp; eslint . &amp;&amp; npm run size&#34;
+  }
+```
+
+
+&lt;p align=&#34;center&#34;&gt;
+  &lt;a href=&#34;#key-features&#34;&gt;Key Features&lt;/a&gt; •
+  &lt;a href=&#34;#how-to-use&#34;&gt;How To Use&lt;/a&gt; •
+  &lt;a href=&#34;#download&#34;&gt;Download&lt;/a&gt; •
+  &lt;a href=&#34;#credits&#34;&gt;Credits&lt;/a&gt; •
+  &lt;a href=&#34;#related&#34;&gt;Related&lt;/a&gt; •
+  &lt;a href=&#34;#license&#34;&gt;License&lt;/a&gt;
+&lt;/p&gt;
+
+ --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Normative Modelling in Psychiatry</title>
+      <link>http://pedroferreiradacosta.github.io/project/normative-modelling/</link>
+      <pubDate>Sat, 03 Apr 2021 15:44:07 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/normative-modelling/</guid>
+      <description>&lt;div style=&#34;text-align: justify&#34;&gt;
+&lt;p&gt;It is challenging to successfully train deep learning classifiers when the researcher only has access to small datasets or when the number of features of the input data is large. Both of these are the case for neuroimaging data. It is rare to find datasets with more than a couple thousand examples and this number is even lower for datasets of specific brain disorders.
+One different approach that bypasses this issue is building normative models of the brain and measure these disorders as specific out-of-distribution examples  in a process of anomaly detection. One effective way to build normative models is using auto-regressors, that learn to map inputs to outputs while reducing the data in a middle bottleneck layer. This leads to the model reducing the large feature number of the data to a more manageable number that can be studied as a common distribution.&lt;/p&gt;
+&lt;p&gt;In a first project I contributed to, we developed an adversarial auto-encoder to distinguish mild-cognitive development and Alzheimer&amp;rsquo;s disease and compared the results to classical predicitve models working on the original data.&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.biorxiv.org/content/10.1101/2020.02.10.931824v1.full.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/Warvito/Normative-modelling-using-deep-autoencoders&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code &lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In a second project, we are using state-of-the-art VQVAEs to reduce brain data into a quantized latent space and using transformers to measure the likelihood of the given distribuiton of the data. This is being used to identify psychiatric disorders. This work is still in development&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Relevance Vector Machine</title>
+      <link>http://pedroferreiradacosta.github.io/project/sklearn-rvm/</link>
+      <pubDate>Sat, 03 Apr 2021 15:43:49 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/sklearn-rvm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Brain-Age Problem</title>
+      <link>http://pedroferreiradacosta.github.io/project/brain-age-problem/</link>
+      <pubDate>Thu, 01 Apr 2021 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/brain-age-problem/</guid>
+      <description>&lt;div style=&#34;text-align: justify&#34;&gt;
+The Brain Age problem is a standard example of the application of machine learning to Neuroimaging research. It consists on training predictors of age based solely on brain MRI scans. This is possible because the brain changes as we age. It also allows us to identify brains that are &#39;aging&#39; faster than the expected - a biomarker for disorders such as Alzheimer&#39;s. In my research, I explored the use of classical machine learning and genetic algorithms to solve this problem. 
+&lt;p&gt;Despite the gain in popularity of deep learning methods across different fields (including neuroscience), it is still an open question if its performance can overcome classical methods in brain data, where the number of features is high and the number of samples is low. As deep learning methods have a higher tendency to overfit, classical machine learning methods such as Support Vector Machines, Relevance Vector Machines and Multiple Regressions have an important role in neuroscience research.&lt;/p&gt;
+&lt;p&gt;To test this point, I participated in an international competition to build brain-age models - Predictive Analytics Competition (PAC) 2019 - using only shallow machine learning models. Out of the 274 participants, our team finished in the top-10 most accurate models using an ensemble of shallow models. Our methods and approach are detailed in our paper:
+&lt;img src=&#34;paper1.png&#34; alt=&#34;Brain-Age Prediction Using Shallow Machine Learning: Predictive Analytics Competition 2019&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.frontiersin.org/articles/10.3389/fpsyt.2020.604478/full&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/Mind-the-Pineapple/mind-the-gap&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://web.archive.org/web/20200214101600/https://www.photon-ai.com/pac2019&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-globe  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Website&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In another study, we showed that there is no statistically significant difference between Support Vector Regression (SVM), Gaussian Process Regression (GPR) and Relevance Vector Regression (RVM), and that overall, the type of input data has a larger impact into the accuracy of the trained predictor.
+&lt;img src=&#34;paper2.png&#34; alt=&#34;Brain age prediction: A comparison between machine learning models usnig region- and voxel-based morphometric data&#34;&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://onlinelibrary.wiley.com/doi/10.1002/hbm.25368&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/MLMH-Lab/Brain-age-prediction&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Generative Art</title>
+      <link>http://pedroferreiradacosta.github.io/project/generative_art/</link>
+      <pubDate>Sat, 18 Apr 2020 21:40:05 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/generative_art/</guid>
+      <description>&lt;p&gt;I love art and have always been fascinated by those who could express themselves and their creativity with the stroke of a brush. Unfortunately, I&amp;rsquo;ve been cursed with the ability to draw of a blind chicken. So it was with complete awe that I discovered that generative models can be manipulated to put together beautiful and aesthetic images. I became fascinated by these models and the idea that I can finally express myself in a visual canvas.&lt;/p&gt;
+&lt;p&gt;This is something that helps me unwind. Just taking strolls down latent space.&lt;/p&gt;
+&lt;img src=&#34;the_second_coming.png&#34; alt=&#34;The second-coming&#34;&gt;
+&lt;img src=&#34;the_end_of_humanity__the_world_will_be_fine.png&#34; alt=&#34;The end of humanity. The world will be fine.&#34;&gt;
+&lt;img src=&#34;Modern_addictions.png&#34; alt=&#34;Modern addictions&#34;&gt;
+&lt;img src=&#34;Let_there_be_light.png&#34; alt=&#34;Let there be light&#34;&gt;
+&lt;img src=&#34;Balance.png&#34; alt=&#34;Balance&#34;&gt;
+&lt;p&gt;Below is a list of awesome resources (none authored by me) that can be used for image or audio generation.&lt;/p&gt;
+&lt;details&gt;&lt;summary&gt;&lt;h3&gt;&lt;b&gt;Awesome Generative Models for creativity&lt;/b&gt;&lt;/h3&gt;&lt;/summary&gt;
+&lt;p&gt;List of awesome algorithms and notebooks freely available to use:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/openai/DALL-E/blob/master/notebooks/usage.ipynb&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;DALL-E&lt;/a&gt;&lt;/strong&gt;
+Generating images from descriptions (VQVAE + Transformers)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/deepfakes/faceswap&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Deep Fakes&lt;/a&gt;&lt;/strong&gt;
+Application of FaceSwap to video.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/tutorials/generative/deepdream.ipynb&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Google Deep Dream&lt;/a&gt;&lt;/strong&gt;
+Notebook to adapt input data (images) to minimize a given layer&amp;rsquo;s error. Trippy results.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://colab.research.google.com/github/tensorflow/hub/blob/master/examples/colab/biggan_generation_with_tf_hub.ipynb#scrollTo=MfBg1C5NB3X0&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BigGAN&lt;/a&gt;&lt;/strong&gt;
+Really big generator - 1k categories and millions of parameters.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://colab.research.google.com/github/tensorflow/lucid/blob/master/notebooks/differentiable-parameterizations/style_transfer_2d.ipynb&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Style Transfer&lt;/a&gt;&lt;/strong&gt;
+Transfering style between 2 2D images - e.g., change type of paintings&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://medium.com/merzazine/ai-creativity-alien-elements-with-style-27ee7e45df92&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Alien Element&lt;/a&gt;&lt;/strong&gt;
+Add a foreign element to the image and adjust its style to original image&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/tensorflow/lucid&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Lucid collection&lt;/a&gt;&lt;/strong&gt;
+Feature visualization and networks interpretability&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;StyleGAN2&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Trained on &lt;a href=&#34;https://mega.nz/#!PbgzWTZT!JbVpqgMU7AOg-sQUoG1BDepuwKtgAsLgjd4YwlTXlpc&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;bacteria&lt;/a&gt;, &lt;a href=&#34;https://mega.nz/#!TCgSVCTa!ZmcV381soxyqiQyHO4p60F5ogoHcaO1PqDF9ZuiHVQw&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;art&lt;/a&gt;, &lt;a href=&#34;https://mega.nz/#!iSZH1KAJ!2bZvb_rNd7mkPt3tdBP-8_sEw-6uolhja4J2SzLytZU&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;escher&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://colab.research.google.com/github/genforce/sefa/blob/master/docs/SeFa.ipynb#scrollTo=NoWI4fPQ6Gnf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Change latent directions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://amarsaini.github.io/Epoching-Blog/jupyter/2020/08/10/Latent-Space-Exploration-with-StyleGAN2.html#2.-Generate-Images-of-People-who-don%27t-Exist&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Encoding, interpolation, semantic latents and face alignement&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/justinpinkney/awesome-pretrained-stylegan2&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Other pre-trained StyleGAN2&lt;/a&gt; and &lt;a href=&#34;https://colab.research.google.com/drive/1cFKK0CBnev2BF8z9BOHxePk7E-f7TtUi&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;art&lt;/a&gt; and &lt;a href=&#34;https://github.com/pbaylies/stylegan2&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;art from Wikipedia&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://colab.research.google.com/drive/1Y5i50xSFIuN3V4Md8TB30_GOAtts7RQD?usp=sharing&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Lucid Sonic Dreams&lt;/a&gt;&lt;/strong&gt;
+Generative Audio-Visual Art - using music to navigate the latent space&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/msieg/deep-music-visualizer&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Deep Music Visualizer&lt;/a&gt;&lt;/strong&gt; Similar concept&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;DeOldify for &lt;a href=&#34;https://github.com/jantic/DeOldify&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;images&lt;/a&gt; and &lt;a href=&#34;https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;videos&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://colab.research.google.com/drive/1hxx4iSuAOyeI2gCL54vQkpEuBVrIv1hY&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;3D videos from single photo&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://colab.research.google.com/github/AliaksandrSiarohin/first-order-model/blob/master/demo.ipynb#scrollTo=UCMFMJV7K-ag&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;First-order Motions&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://colab.research.google.com/drive/1VLG8e7YSEwypxU-noRNhsv5dW4NfTGce&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;GPT2&lt;/a&gt;&lt;/strong&gt; - train and evaluate&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://colab.research.google.com/github/gpt2ent/gpt2colab-js/blob/master/GPT2_with_Javascript_interface_POC.ipynb&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Javascript interface&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://colab.research.google.com/drive/1IN3IgWQoB9WZGyz689COSGNnvnz7lIFI&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;StyleGAN + CLIP&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://colab.research.google.com/drive/1AwBoTjsM7CoNcv1snAyfGWGltgdZzfMp#scrollTo=Nq0wA-wc-P-s&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BigGAN + CLIP&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/details&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Modelling Behaviour</title>
+      <link>http://pedroferreiradacosta.github.io/project/modelling-behaviour/</link>
+      <pubDate>Thu, 02 Apr 2020 15:43:22 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/modelling-behaviour/</guid>
+      <description>&lt;div style=&#34;text-align: justify&#34;&gt;
+The relationship between the brain and cognition remains unclear, despite several decades of functional neuroimaging research. One limitation is that the cognitive processes we attempt to match to brain activity are taken from psychological constructs derived in a somewhat ad hoc manner. This project took a different approach, taking advantage of developments with artificial neural networks (ANNs) to learn shared mechanisms. The purpose was to evaluate the execution mechanisms between multiple cognitive tasks without relying on predefined cognitive domains. Therefore, a Recurrent Neural Network was developed to perform six cognitive tasks with an accuracy of 93%, that tapped on the processes of reaction, inhibition and working memory. With regard to the obtained model, it was tested if the mechanism provides a good explanation for the activation patterns in the brain regions previously associated to the cognitive processes. Although comparisons between the model’s activations and real brain data bared little similarities, the model’s mechanisms expressed an effective system of interpreting each task. It was clear, by analysis of the model’s interpretation of the input dataset, that the concept of task and moment of reaction were important factors for the correct solution. From the study of node variation along trials, one stood out (unit 28) by displaying a behaviour similar to inhibition control in biological systems. This work intended to provide novel insights into both brain and cognition, suggesting a potential parallelism between the artificial model and the biological processes. This perspective can contribute to a clearer interpretation of the cognitive processes.
+&lt;br&gt;&lt;br&gt;
+&lt;p&gt;This work was developed for my MSc thesis at the C3NL in Imperial College London. I presented this work at the Conference for Computational Neuroscience.&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://pedroferreiradacosta.github.io/files/daCosta_Master_thesis.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-book  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Thesis&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://ccneuro.org/2019/proceedings/0000272.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/PedroFerreiradaCosta/Solving-Cognitive-Tasks-w-LSTMs&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

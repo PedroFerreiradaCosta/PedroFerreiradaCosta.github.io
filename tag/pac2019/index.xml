@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PAC2019 | Pedro F da Costa</title>
+    <link>http://pedroferreiradacosta.github.io/tag/pac2019/</link>
+      <atom:link href="http://pedroferreiradacosta.github.io/tag/pac2019/index.xml" rel="self" type="application/rss+xml" />
+    <description>PAC2019</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2021 Pedro F da Costa</copyright><lastBuildDate>Thu, 01 Apr 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>PAC2019</title>
+      <link>http://pedroferreiradacosta.github.io/tag/pac2019/</link>
+    </image>
+    
+    <item>
+      <title>Brain-Age Problem</title>
+      <link>http://pedroferreiradacosta.github.io/project/brain-age-problem/</link>
+      <pubDate>Thu, 01 Apr 2021 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/brain-age-problem/</guid>
+      <description>&lt;div style=&#34;text-align: justify&#34;&gt;
+The Brain Age problem is a standard example of the application of machine learning to Neuroimaging research. It consists on training predictors of age based solely on brain MRI scans. This is possible because the brain changes as we age. It also allows us to identify brains that are &#39;aging&#39; faster than the expected - a biomarker for disorders such as Alzheimer&#39;s. In my research, I explored the use of classical machine learning and genetic algorithms to solve this problem. 
+&lt;p&gt;Despite the gain in popularity of deep learning methods across different fields (including neuroscience), it is still an open question if its performance can overcome classical methods in brain data, where the number of features is high and the number of samples is low. As deep learning methods have a higher tendency to overfit, classical machine learning methods such as Support Vector Machines, Relevance Vector Machines and Multiple Regressions have an important role in neuroscience research.&lt;/p&gt;
+&lt;p&gt;To test this point, I participated in an international competition to build brain-age models - Predictive Analytics Competition (PAC) 2019 - using only shallow machine learning models. Out of the 274 participants, our team finished in the top-10 most accurate models using an ensemble of shallow models. Our methods and approach are detailed in our paper:
+&lt;img src=&#34;paper1.png&#34; alt=&#34;Brain-Age Prediction Using Shallow Machine Learning: Predictive Analytics Competition 2019&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.frontiersin.org/articles/10.3389/fpsyt.2020.604478/full&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/Mind-the-Pineapple/mind-the-gap&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://web.archive.org/web/20200214101600/https://www.photon-ai.com/pac2019&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-globe  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Website&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In another study, we showed that there is no statistically significant difference between Support Vector Regression (SVM), Gaussian Process Regression (GPR) and Relevance Vector Regression (RVM), and that overall, the type of input data has a larger impact into the accuracy of the trained predictor.
+&lt;img src=&#34;paper2.png&#34; alt=&#34;Brain age prediction: A comparison between machine learning models usnig region- and voxel-based morphometric data&#34;&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://onlinelibrary.wiley.com/doi/10.1002/hbm.25368&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/MLMH-Lab/Brain-age-prediction&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

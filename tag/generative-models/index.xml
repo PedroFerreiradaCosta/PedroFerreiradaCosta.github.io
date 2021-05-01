@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>generative models | Pedro F da Costa</title>
+    <link>http://pedroferreiradacosta.github.io/tag/generative-models/</link>
+      <atom:link href="http://pedroferreiradacosta.github.io/tag/generative-models/index.xml" rel="self" type="application/rss+xml" />
+    <description>generative models</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2021 Pedro F da Costa</copyright><lastBuildDate>Mon, 19 Apr 2021 22:04:02 +0100</lastBuildDate>
+    <image>
+      <url>http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>generative models</title>
+      <link>http://pedroferreiradacosta.github.io/tag/generative-models/</link>
+    </image>
+    
+    <item>
+      <title>Modelling Coloured Images</title>
+      <link>http://pedroferreiradacosta.github.io/post/auto_encoder2/</link>
+      <pubDate>Mon, 19 Apr 2021 22:04:02 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/post/auto_encoder2/</guid>
+      <description>&lt;p&gt;This post is presented in &lt;a href=&#34;https://blog.usejournal.com/modelling-coloured-images-acd0ebde0102&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;noteworthy - the journal blog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Hi everybody! Today, we will continue the series about autoregressive models.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;&lt;strong&gt;Summary&lt;/strong&gt;&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Autoregressive models — PixelCNN&lt;/li&gt;
+&lt;li&gt;Modelling coloured images&lt;/li&gt;
+&lt;li&gt;PixelCNN’s blind spot in the receptive field&lt;/li&gt;
+&lt;li&gt;Fixing the blind spot — Gated PixelCNN&lt;/li&gt;
+&lt;li&gt;Conditional generation with Gated PixelCNN&lt;/li&gt;
+&lt;li&gt;Gated PixelCNN with cropped convolutions&lt;/li&gt;
+&lt;li&gt;Improving performance — PixelCNN++&lt;/li&gt;
+&lt;li&gt;Improving sampling time — Fast PixelCNN++&lt;/li&gt;
+&lt;li&gt;Using attention mechanisms — PixelSNAIL&lt;/li&gt;
+&lt;li&gt;Generating Diverse High-Fidelity Images — VQ-VAE 2&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For each topic, we implemented the models that are available in &lt;a href=&#34;https://github.com/Mind-the-Pineapple/Autoregressive-models&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In our previous post, we described an Autoregressive model for grayscale images, which only have one channel. In this post, we will talk about how to model images with multiples channels, such as RGB images. Let’s start!&lt;/p&gt;
+&lt;p&gt;The code for this topic can be found &lt;a href=&#34;https://github.com/Mind-the-Pineapple/Autoregressive-models&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;in this link&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;&lt;strong&gt;Introduction&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;As we discussed in our previous post, autoregressive generative models generate data from the product of conditional distributions, meaning that they depend on the previous pixels. So, to train the PixelCNN, we need to impose an ordering on the pixels of the generated image (e.g., from top to bottom and from left to right). To hide “future” pixels in convolutional operations, we mask the convolutional layers to ignore the information coming after the already predicted pixels. The first layer of the model should not have access to the pixel of interest of the input image, so we zero out the central pixel in the mask (we call this Mask A). But in the subsequent layers, the central pixel in the mask is already ignoring the pixel of interest of the input image, so it shouldn’t be zeroed out, so we use a Mask B. When dealing with images with more than one channel, such as coloured images which have three colour channels, which masks should we be using?&lt;/p&gt;
+&lt;h2 id=&#34;coloured-images&#34;&gt;&lt;strong&gt;Coloured Images&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Coloured images are composed of three channels, Red, Green and Blue (RGB). The different colour channels can also be called sub-pixels. Each sub-pixel is not independent of the others as they compose a congruent image when combined. It is, therefore, necessary to order the sub-pixels so that we can process them sequentially and account for previous sub-pixels when predicting the next one, just as we do for the pixels. The masks need to be constructed to ensure that the prediction of a pixel is not a function of its input value.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;Image1&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Following the original paper, we choose to order the sub-pixels from R → G → B. In the first convolutional layer, we use Mask A where the R channel will have only access to the information of the previous pixels, which we call context, the G channel will have access to the context and the R channel, and finally, the B channel will have access to the context and both R and G channel. In the following convolutional layers, the central pixel of the previous convolutional layer has not ‘seen’ the input’s central pixel. So, the central sub-pixel does not need to be zeroed out. This means that in Mask B, the R channel has access to the context and the previous layer’s R channel. The G channel has access to the context plus the R and G channel and the B channel will have access to the context and the three channels.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image2.png&#34; alt=&#34;Image2&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Here we present a snippet showing how to build the masks for images with more than one channel. When the mask is connecting a channel of the current layer (i) that is a later order channel than the previous layer channel (j) and we zero out the central pixel. For mask A, we also zero out the central pixel when the current layer is connecting the same channel in the previous layer.&lt;/p&gt;
+&lt;p&gt;The network architecture we used is similar to the one presented for one-channel generative models, following Oord et al. 2016 implementation with 15 residual blocks and was presented on our &lt;a href=&#34;https://towardsdatascience.com/autoregressive-models-pixelcnn-e30734ede0c1&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;first blog post&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;inference&#34;&gt;&lt;strong&gt;Inference&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;When we are inferring coloured images, we have to predict three times more values than for one-channel images. This makes training the model more challenging. Here we trained our PixelCNN using the CIFAR10 dataset, so following Andrej Karpathy’s &lt;a href=&#34;http://karpathy.github.io/2019/04/25/recipe/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;recipe for training neural networks&lt;/a&gt;, we started by overfitting the model to the first two training set images.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image3.png&#34; alt=&#34;Image3&#34;&gt;&lt;/p&gt;
+&lt;p&gt;So far, so good. After 10 epochs the model had already learned to mimic exactly the training set. But when we try to predict the next pixels of an occluded image that the model hasn’t seen yet, it does a poor job of completing the picture. This is expected as the model only learned to replicate the two examples it was shown.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Image4&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Next, we trained our PixelCNN for 20 epochs using 50000 training images example to make our model learn the natural images.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image5.png&#34; alt=&#34;Image5&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Now our results were less than brilliant. Despite generating interesting landscapes, they don’t seem to be learning the structure of the natural images they were trained on.&lt;/p&gt;
+&lt;p&gt;In future posts, we are going to explore reasons behind the ineffectiveness — like the receptive field’s blind spot, and we are going to learn new techniques to improve on the quality of the generated images. Until then, we can simplify the problem by quantising the CIFAR10 images from their original 256 intensity values per sub-pixel to just 8 intensity values per sub-pixel. We trained the same model for 20 epochs and show how the generated image is evolving along epochs.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image6.png&#34; alt=&#34;Image6&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The images generated in the final epochs already has a natural combination of colours. It also does not look like images in the training data, so it is learning the data manifold distribution. We can now see what images the model generates and how it predicts occluded images, just as in the previous case.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image7.png&#34; alt=&#34;Image7&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image8.png&#34; alt=&#34;Image8&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;It’s a challenge to train a PixelCNN to predict coloured figures. Although reducing the number of pixel intensity levels from 256 to 8 improved the results, the generated images were still not ideal. We briefly mentioned during the text that the performance could be improved by fixing the blind spot problem. So in the next two blog post, we will first introduce what is the blind spot and then we will show how we can fix it. So, stay tuned!&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;&lt;strong&gt;References&lt;/strong&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://bjlkeng.github.io/posts/pixelcnn/&#34;&gt;http://bjlkeng.github.io/posts/pixelcnn/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/bjlkeng/sandbox/blob/master/notebooks/pixel_cnn/pixelcnn_helpers.py&#34;&gt;https://github.com/bjlkeng/sandbox/blob/master/notebooks/pixel_cnn/pixelcnn_helpers.py&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://sergeiturukin.com/2017/02/22/pixelcnn.html&#34;&gt;http://sergeiturukin.com/2017/02/22/pixelcnn.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rampage644/wavenet/blob/master/wavenet/models.py&#34;&gt;https://github.com/rampage644/wavenet/blob/master/wavenet/models.py&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tensorflow/magenta/blob/master/magenta/reviews/pixelrnn.md&#34;&gt;https://github.com/tensorflow/magenta/blob/master/magenta/reviews/pixelrnn.md&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Autoregressive Models — PixelCNN</title>
+      <link>http://pedroferreiradacosta.github.io/post/auto_encoder/</link>
+      <pubDate>Mon, 19 Apr 2021 21:36:33 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/post/auto_encoder/</guid>
+      <description>&lt;p&gt;This post is presented in &lt;a href=&#34;https://towardsdatascience.com/autoregressive-models-pixelcnn-e30734ede0c1&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;towardsdatascience.com&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Hi everybody! This is our first post of a series about modern autoregressive models. Here are the topics we are going to cover in this series:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Summary&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Autoregressive models — PixelCNN&lt;/li&gt;
+&lt;li&gt;Modelling coloured images&lt;/li&gt;
+&lt;li&gt;PixelCNN’s blind spot in the receptive field&lt;/li&gt;
+&lt;li&gt;Fixing the blind spot — Gated PixelCNN&lt;/li&gt;
+&lt;li&gt;Conditional generation with Gated PixelCNN&lt;/li&gt;
+&lt;li&gt;Gated PixelCNN with cropped convolutions&lt;/li&gt;
+&lt;li&gt;Improving performance — PixelCNN++&lt;/li&gt;
+&lt;li&gt;Improving sampling time — Fast PixelCNN++&lt;/li&gt;
+&lt;li&gt;Using attention mechanisms — PixelSNAIL&lt;/li&gt;
+&lt;li&gt;Generating Diverse High-Fidelity Images — VQ-VAE 2&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The implementation for each one of these topics can be found in &lt;a href=&#34;https://github.com/Mind-the-Pineapple/Autoregressive-models&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Let’s start!&lt;/p&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;&lt;strong&gt;Introduction&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Generative models are an important class of models from unsupervised learning that have been receiving a lot of attention in these last few years. These can be defined as a class of models whose goal is to learn how to generate new samples that appear to be from the same dataset as the training data. During the training phase, a generative model tries to solve the core task of &lt;strong&gt;density estimation&lt;/strong&gt;. In density estimation, our model learns to construct an estimate — &lt;em&gt;pmodel(x)&lt;/em&gt; — as similar as possible to the unobservable probability density function — &lt;em&gt;pdata(x)&lt;/em&gt;. It is important to mention that the generative model should be able to make up new samples from the distribution, and not just copy and paste existing ones. Once we have successfully trained our model, it can be used for a wide variety of applications that range from forms of reconstruction such as image inpainting, colourization, and super-resolution, to the generation of artwork.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;Image1&#34;&gt;&lt;/p&gt;
+&lt;p&gt;There are a few different approaches that we can use to perform this probability density estimation, such as:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Generative Adversarial Networks (GANs)&lt;/strong&gt; use an approach where the model performs an &lt;em&gt;implicit density estimation&lt;/em&gt;. In this case, we train a model that can create samples from &lt;em&gt;pmodel(x)&lt;/em&gt; without explicitly defining &lt;em&gt;pmodel(x)&lt;/em&gt;; the model learns a stochastic procedure that generates data but does not provide knowledge of the probability of observations or specify a conditional log-likelihood function;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Variational autoencoders (VAE)&lt;/strong&gt; use an &lt;em&gt;explicit density estimation&lt;/em&gt; but define an intractable density function with latent variables that cannot be optimized directly. So, to train the model, we derive and optimize the lower bound of likelihood instead (&lt;strong&gt;approximate density&lt;/strong&gt;); we optimize the log-likelihood of the data by maximizing the evidence lower bound (ELBO) (more details can be found &lt;a href=&#34;https://www.cs.ubc.ca/~lsigal/532S_2018W2/Lecture13b.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt; and &lt;a href=&#34;https://arxiv.org/abs/1906.02691&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;);&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Autoregressive (AR) models&lt;/strong&gt; create an &lt;em&gt;explicit density&lt;/em&gt; model that is tractable to maximize the likelihood of training data (&lt;em&gt;tractable density&lt;/em&gt;). For this reason, with these methods, it is easy to compute the likelihood of data observation and to get an evaluation metric of the generative model.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;As we mentioned, the autoregressive is one practical approach that provides an explicit modelling of the likelihood function. However, to model data with several dimensions/features, autoregressive models need to impose some conditions. First, the input-space &lt;em&gt;X&lt;/em&gt; needs to have a &lt;strong&gt;determining ordering&lt;/strong&gt; for its features. That is why autoregressive models are normally used for time series that have an intrinsic sequence of time steps. However, they can be employed for images by defining, for example, that the pixels on the left come before the ones on the right, and the ones on top before the ones on the bottom. Second, to tractably model the joint distribution of the features in a data observation (&lt;em&gt;p(x)&lt;/em&gt;), the autoregressive approach casts &lt;em&gt;p(x)&lt;/em&gt; as a &lt;strong&gt;product of conditional distributions&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Autoregressive models define the joint distribution using conditionals over each feature, given the values of the previous features. For example, the probability of a pixel from an image to have a specific intensity value is conditioned by the values of all previous pixels; and the probability of an image (the joint distribution of all pixels) is the combination of the probability of all its pixels. Therefore, autoregressive models use the chain rule to decompose the likelihood of the data sample x into a product of 1-dimensional distributions (equations below). The factorization turns the joint modelling problem into a sequence problem, where one learns to predict the next pixel given all the previously generated pixels.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image2.png&#34; alt=&#34;Image2&#34;&gt;&lt;/p&gt;
+&lt;p&gt;These conditions (i.e. determining ordering and product of conditional distribution) are what mainly defines an autoregressive model.&lt;/p&gt;
+&lt;p&gt;Now, the big challenge is to calculate these conditional likelihoods $p(x_{i}| x_{1}, …, x_{i-1})$. How can we define these complex distributions in an expressive model that is also tractable and scalable? One solution is to use universal approximators, like deep neural networks.&lt;/p&gt;
+&lt;h2 id=&#34;pixelcnn&#34;&gt;&lt;strong&gt;PixelCNN&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;DeepMind introduced PixelCNN in 2016 (&lt;a href=&#34;https://arxiv.org/abs/1601.06759&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Oord et al., 2016&lt;/a&gt;), and this model started one of the most promising families of autoregressive generative models. Since then it has been used to &lt;a href=&#34;https://deepmind.com/blog/article/wavenet-generative-model-raw-audio&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;generate speech&lt;/a&gt;, &lt;a href=&#34;https://arxiv.org/abs/1610.00527&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;videos&lt;/a&gt;, and &lt;a href=&#34;https://arxiv.org/abs/1906.00446&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;high-resolution pictures&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image3.png&#34; alt=&#34;Image3&#34;&gt;&lt;/p&gt;
+&lt;p&gt;PixelCNN is a deep neural network that captures the distribution of dependencies between pixels in its parameters. It sequentially generates one pixel at a time in an image along the two spatial dimensions.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Image4&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Using convolution operations, PixelCNN can parallelly learn the distribution of all pixels in the image. However, when determining the probability of a specific pixel, the receptive field of a standard convolutional layer violates the sequential prediction of autoregressive models. When processing the information of a central pixel, the convolutional filter considers all the pixels around it to calculate the output feature map, not only the previous pixels. Masks are then adopted to block information flow from pixels not yet predicted.&lt;/p&gt;
+&lt;h2 id=&#34;masked-convolutional-layers&#34;&gt;&lt;strong&gt;Masked convolutional layers&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Masking can be done by zeroing out all the pixels that should not be considered. In our implementation, a mask with the same size of the convolutional filter with values 1 and 0 was created. This mask was multiplied with the weight tensor before doing the convolution operation. In the PixelCNN, there are two types of masks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mask type A&lt;/strong&gt;: this mask is applied only to the first convolutional layer. It restricts access to the pixel of interest by zeroing the central pixel in the mask. This way, we guarantee that the model will not access the pixel that it is about to predict (in red in the figure below).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mask type B&lt;/strong&gt;: This mask is applied to all the subsequent convolutional layers and relaxes the restrictions of mask A by allowing the connection from a pixel to itself. This is important in order to account for the pixel prediction of the first layer.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image5.png&#34; alt=&#34;Image5&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Here we present a snippet showing the implementation of the mask using the Tensorflow 2.0 framework.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-diff&#34;&gt;class MaskedConv2D(keras.layers.Layer):
+    &amp;quot;&amp;quot;&amp;quot;Convolutional layers with masks.
+
+    Convolutional layers with simple implementation of masks type A and B for
+    autoregressive models.
+
+    Arguments:
+    mask_type: one of `&amp;quot;A&amp;quot;` or `&amp;quot;B&amp;quot;.`
+    filters: Integer, the dimensionality of the output space
+        (i.e. the number of output filters in the convolution).
+    kernel_size: An integer or tuple/list of 2 integers, specifying the
+        height and width of the 2D convolution window.
+        Can be a single integer to specify the same value for
+        all spatial dimensions.
+    strides: An integer or tuple/list of 2 integers,
+        specifying the strides of the convolution along the height and width.
+        Can be a single integer to specify the same value for
+        all spatial dimensions.
+        Specifying any stride value != 1 is incompatible with specifying
+        any `dilation_rate` value != 1.
+    padding: one of `&amp;quot;valid&amp;quot;` or `&amp;quot;same&amp;quot;` (case-insensitive).
+    kernel_initializer: Initializer for the `kernel` weights matrix.
+    bias_initializer: Initializer for the bias vector.
+    &amp;quot;&amp;quot;&amp;quot;
+
+    def __init__(self,
+                 mask_type,
+                 filters,
+                 kernel_size,
+                 strides=1,
+                 padding=&#39;same&#39;,
+                 kernel_initializer=&#39;glorot_uniform&#39;,
+                 bias_initializer=&#39;zeros&#39;):
+        super(MaskedConv2D, self).__init__()
+
+        assert mask_type in {&#39;A&#39;, &#39;B&#39;}
+        self.mask_type = mask_type
+
+        self.filters = filters
+        self.kernel_size = kernel_size
+        self.strides = strides
+        self.padding = padding.upper()
+        self.kernel_initializer = initializers.get(kernel_initializer)
+        self.bias_initializer = initializers.get(bias_initializer)
+
+    def build(self, input_shape):
+        self.kernel = self.add_weight(&#39;kernel&#39;,
+                                      shape=(self.kernel_size,
+                                             self.kernel_size,
+                                             int(input_shape[-1]),
+                                             self.filters),
+                                      initializer=self.kernel_initializer,
+                                      trainable=True)
+
+        self.bias = self.add_weight(&#39;bias&#39;,
+                                    shape=(self.filters,),
+                                    initializer=self.bias_initializer,
+                                    trainable=True)
+
+        center = self.kernel_size // 2
+
+        mask = np.ones(self.kernel.shape, dtype=np.float32)
+        mask[center, center + (self.mask_type == &#39;B&#39;):, :, :] = 0.
+        mask[center + 1:, :, :, :] = 0.
+
+        self.mask = tf.constant(mask, dtype=tf.float32, name=&#39;mask&#39;)
+
+    def call(self, input):
+        masked_kernel = tf.math.multiply(self.mask, self.kernel)
+        x = nn.conv2d(input,
+                      masked_kernel,
+                      strides=[1, self.strides, self.strides, 1],
+                      padding=self.padding)
+        x = nn.bias_add(x, self.bias)
+        return x
+  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;architecture&#34;&gt;&lt;strong&gt;Architecture&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;In Oord et al. 2016, the PixelCNN uses the following architecture: the first layer is a masked convolution (type A) with 7x7 filters. Then, 15 residuals blocks were used. Each block processes the data with a combination of 3x3 convolutional layers with mask type B and standard 1x1 convolutional layers. Between each convolutional layer, there is a non-linearity ReLU. Finally, the residual blocks also include a residual connection.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image6.png&#34; alt=&#34;Image6&#34;&gt;&lt;/p&gt;
+&lt;p&gt;After the sequence of the blocks, the network has a chain of RELU-CONV-RELU-CONV layers using standard convolutional layers with 1x1 filters. Then, the output layer is a softmax layer which predicts the value among all possible values of a pixel. The output of the model has the same spatial format as the input image (because we want an output value for each pixel) times the number of possible values (for example, 256 intensity levels).
+Here we present a snippet showing the implementation of the network architecture using the Tensorflow 2.0 framework.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-diff&#34;&gt;class ResidualBlock(keras.Model):
+    &amp;quot;&amp;quot;&amp;quot;Residual blocks that compose pixelCNN
+
+    Blocks of layers with 3 convolutional layers and one residual connection.
+    Based on Figure 5 from [1] where h indicates number of filters.
+
+    Refs:
+    [1] - Oord, A. V. D., Kalchbrenner, N., &amp;amp; Kavukcuoglu, K. (2016). Pixel
+     recurrent neural networks. arXiv preprint arXiv:1601.06759.
+    &amp;quot;&amp;quot;&amp;quot;
+
+    def __init__(self, h):
+        super(ResidualBlock, self).__init__(name=&#39;&#39;)
+
+        self.conv2a = keras.layers.Conv2D(filters=h, kernel_size=1, strides=1)
+        self.conv2b = MaskedConv2D(mask_type=&#39;B&#39;, filters=h, kernel_size=3, strides=1)
+        self.conv2c = keras.layers.Conv2D(filters=2 * h, kernel_size=1, strides=1)
+
+    def call(self, input_tensor):
+        x = nn.relu(input_tensor)
+        x = self.conv2a(x)
+
+        x = nn.relu(x)
+        x = self.conv2b(x)
+
+        x = nn.relu(x)
+        x = self.conv2c(x)
+
+        x += input_tensor
+        return x
+        
+# Create PixelCNN model
+inputs = keras.layers.Input(shape=(height, width, n_channel))
+x = MaskedConv2D(mask_type=&#39;A&#39;, filters=128, kernel_size=7, strides=1)(inputs)
+
+for i in range(15):
+    x = ResidualBlock(h=64)(x)
+
+x = keras.layers.Activation(activation=&#39;relu&#39;)(x)
+x = keras.layers.Conv2D(filters=128, kernel_size=1, strides=1)(x)
+x = keras.layers.Activation(activation=&#39;relu&#39;)(x)
+x = keras.layers.Conv2D(filters=128, kernel_size=1, strides=1)(x)
+x = keras.layers.Conv2D(filters=q_levels, kernel_size=1, strides=1)(x)
+
+pixelcnn = keras.Model(inputs=inputs, outputs=x)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;preprocessing&#34;&gt;&lt;strong&gt;Preprocessing&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;The input values of the PixelCNN were scaled to be in the range of [0, 1]. During this preprocessing, it was possible to quantize the values of the pixels in a lower number of intensity levels. In our implementation, we first present the model trained with two intensity levels, and then with all the 256 levels. We notice that the model performed better in the data with fewer levels due to the lower problem complexity (less possible values to consider in the probability distributions of the pixels).&lt;/p&gt;
+&lt;p&gt;The target data corresponded to categorical (integer) values indicating a pixel’s intensity.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image7.png&#34; alt=&#34;Image7&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;model-evaluation&#34;&gt;&lt;strong&gt;Model evaluation&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;PixelCNN has an easy method to train. The model learns its parameters by maximizing the likelihood of the training data.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image8.png&#34; alt=&#34;Image8&#34;&gt;&lt;/p&gt;
+&lt;p&gt;As most optimization problems are defined as a minimization problem, a commonly used trick is to transform the training objective into the minimization of the negative log-likelihood (NLL).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image9.png&#34; alt=&#34;Image9&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Since $p(x_{i}|\theta)$ correspond to the probabilities outputted by the softmax layer, the NLL is equivalent to the cross-entropy loss function — a commonly used loss function in supervised learning. Also, NLL is a metric used to compare the performance between generative methods (using nats units or bits per pixel).&lt;/p&gt;
+&lt;h2 id=&#34;inference&#34;&gt;&lt;strong&gt;Inference&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Since PixelCNN is an autoregressive model, inference happens to be sequential — we have to generate pixel by pixel. First, we generate an image by passing zeros to our model. It shouldn’t influence the very first pixel as its value is modelled to be independent of all the others. So, we perform forward pass and obtain its distribution. Given the distribution, we sample a value from a multinomial probability distribution. Then, we update our image with sampled pixel values, and we repeat this process until we have all pixel values generated. Here used a PixelCNN to generate samples after 150 epochs using the MNIST dataset. Each generated image had four levels of pixel intensity.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image10.png&#34; alt=&#34;Image10&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The same sampling process can be used with images partially occluded as starting point.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image11.png&#34; alt=&#34;Image11&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Now, we also tried to train or model to produce images with 256 levels of pixel intensity.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image12.png&#34; alt=&#34;Image12&#34;&gt;&lt;/p&gt;
+&lt;p&gt;This sampling process is relatively slow when compared with other generative models (VAE and GANs), where all pixels are generated in one go. However, recent advances have used cached values to reduce the sampling time (Fast PixelCNN++, addressed in the next posts)&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;The advantage of the PixelCNN model is that the joint probability learning technique is tractable, and it can be learned using gradient descent. There is no approximation; we just try to predict each pixel value given all the previous pixel values. Since PixelCNN is trained by minimizing the negative log-likelihood, its training is more stable when compared with alternatives approaches (e.g. GANs — that requires to find the Nash equilibrium). However, as the generation of samples is sequential (pixel-by-pixel), the original PixelCNN struggles with scalability. In the next post, we will train a PixelCNN model in a dataset with RGB channels.&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;&lt;strong&gt;References&lt;/strong&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://sergeiturukin.com/2017/02/22/pixelcnn.html&#34;&gt;http://sergeiturukin.com/2017/02/22/pixelcnn.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://towardsdatascience.com/auto-regressive-generative-models-pixelrnn-pixelcnn-32d192911173&#34;&gt;https://towardsdatascience.com/auto-regressive-generative-models-pixelrnn-pixelcnn-32d192911173&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://deepgenerativemodels.github.io/&#34;&gt;https://deepgenerativemodels.github.io/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://eigenfoo.xyz/deep-autoregressive-models/&#34;&gt;https://eigenfoo.xyz/deep-autoregressive-models/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://wiki.math.uwaterloo.ca/statwiki/index.php?title=STAT946F17/Conditional_Image_Generation_with_PixelCNN_Decoders&#34;&gt;https://wiki.math.uwaterloo.ca/statwiki/index.php?title=STAT946F17/Conditional_Image_Generation_with_PixelCNN_Decoders&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.codeproject.com/Articles/5061271/PixelCNN-in-Autoregressive-Models&#34;&gt;https://www.codeproject.com/Articles/5061271/PixelCNN-in-Autoregressive-Models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://towardsdatascience.com/blind-spot-problem-in-pixelcnn-8c71592a14a&#34;&gt;https://towardsdatascience.com/blind-spot-problem-in-pixelcnn-8c71592a14a&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=5WoItGTWV54&amp;amp;t=1165s&#34;&gt;https://www.youtube.com/watch?v=5WoItGTWV54&amp;amp;t=1165s&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=R8fx2b8Asg0&#34;&gt;https://www.youtube.com/watch?v=R8fx2b8Asg0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://arxiv.org/pdf/1804.00779v1.pdf&#34;&gt;https://arxiv.org/pdf/1804.00779v1.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.evjang.com/2019/07/likelihood-model-tips.html&#34;&gt;https://blog.evjang.com/2019/07/likelihood-model-tips.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://arxiv.org/abs/1810.01392&#34;&gt;https://arxiv.org/abs/1810.01392&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://bjlkeng.github.io/posts/pixelcnn/&#34;&gt;http://bjlkeng.github.io/posts/pixelcnn/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://jrbtaylor.github.io/conditional-pixelcnn/&#34;&gt;https://jrbtaylor.github.io/conditional-pixelcnn/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.gatsby.ucl.ac.uk/~balaji/Understanding-GANs.pdf&#34;&gt;http://www.gatsby.ucl.ac.uk/~balaji/Understanding-GANs.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.cs.ubc.ca/~lsigal/532S_2018W2/Lecture13b.pdf&#34;&gt;https://www.cs.ubc.ca/~lsigal/532S_2018W2/Lecture13b.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://tinyclouds.org/residency/&#34;&gt;https://tinyclouds.org/residency/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://tensorflow.blog/2016/11/29/pixelcnn-1601-06759-summary/&#34;&gt;https://tensorflow.blog/2016/11/29/pixelcnn-1601-06759-summary/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://web.cs.hacettepe.edu.tr/~aykut/classes/spring2018/cmp784/slides/lec10-deep_generative_models-part-I_2.pdf&#34;&gt;https://web.cs.hacettepe.edu.tr/~aykut/classes/spring2018/cmp784/slides/lec10-deep_generative_models-part-I_2.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Building new methods with Bayesian Optimization</title>
+      <link>http://pedroferreiradacosta.github.io/project/bayesian-optimization/</link>
+      <pubDate>Sat, 03 Apr 2021 15:44:41 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/bayesian-optimization/</guid>
+      <description>&lt;p&gt;Bayesian Optimization is an efficient algorithm for sampling unknown costly functions to find its optimal value. It does so, by trading-off between exploitation and exploration through the use of an acquisition function and it requires a minimal number of samples. In neuroscience research, hypothesis testing is extremely costly (and exploration analyses has lead to bad science practices [ &lt;a href=&#34;https://www.deborahapthorp.com/courses/replicability/topic_8/readings/Maxwell2015.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;1&lt;/a&gt; ] ).&lt;/p&gt;
+&lt;p&gt;In my PhD research, one of my main focuses is to build convenient tools that empower the researcher to automatically navigate different hypothesis to solve a problem. I do so, by tackling 2 fields of research:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Building a novel AutoML algorithm that organizes the configuration space of ML predictors borrowing from Collaborative Filtering research.&lt;/li&gt;
+&lt;li&gt;Using Generative Adersarial Networks (GANs) to build semantically disentangled spaces of faces to optimize individual response.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The 2 sub-projects are detailed below.&lt;/p&gt;
+&lt;hr&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;ModelZoom&lt;/b&gt;&lt;br&gt;
+&lt;i&gt;A data-driven approach for AutoML&lt;/i&gt;&lt;/summary&gt;
+&lt;br&gt;
+ModelZoom is an AutoML tool that leverages the organization of the configurational space of pipelines to maximise information of each sampled pipeline. The configurational space is built by distilling meta-data from each single pipeline prediction on a number of dataset. The information is reduced from very high-dimensions to a low-dimensional configurational space using techniques from Collaborative Filtering.
+&lt;p&gt;This Euclidean space is used to maximise information obtained from sampling a given pipeline by assuming the correlation of prediction of neighbouring pipelines.&lt;/p&gt;
+&lt;p&gt;This work is currently under review for publication and was presented at the &lt;a href=&#34;http://mlss.tuebingen.mpg.de/2020/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Machine Learning Summer School 2020 (MLSS2020)&lt;/a&gt;. The video presentation can be accessed below.&lt;/p&gt;
+&lt;iframe src=&#34;https://drive.google.com/file/d/1YoWJBJcdJYUKWhz3qntTy37ZmVhlNy8K/preview&#34; width=&#34;640&#34; height=&#34;480&#34;&gt;&lt;/iframe&gt;
+&lt;!-- 
+ModelZoom paper
+
+Code
+
+Algorithm download
+
+Post link (towards datascience?) --&gt;
+&lt;/details&gt;
+&lt;hr&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;FaceFitOpt&lt;/b&gt;&lt;br&gt;
+&lt;i&gt;Optimizing neural data over facial stimuli&lt;/i&gt;&lt;/summary&gt;
+&lt;p&gt;&lt;img src=&#34;facefitopt.png&#34; alt=&#34;Facefitopt - optimizing over neural data&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In this project we use Bayesian optimization to guide human neural and behavioural responses to facial stimuli in order to maximise different target metrics. The space of facial stimuli is organized by manipulating a GAN latent space trained on faces (FFHQ). In this project we present results from a web-based proof-of-principle study, where participants rated images of themselves generated via performing Bayesian optimization over the latent space of a GAN. We show how the algorithm can efficiently locate an individual&amp;rsquo;s optimal face while mapping out their response across different semantic transformations of a face; inter-individual analyses suggest how the approach can provide rich information about individual differences in face processing.&lt;/p&gt;
+&lt;p&gt;This work was published and presented at &lt;a href=&#34;https://sites.google.com/view/automl2020/home&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ICML@AutoML workshop&lt;/a&gt;. The oral presentation can be accessed below.&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.automl.org/wp-content/uploads/2020/07/AutoML_2020_paper_58.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/PedroFerreiradaCosta/FaceFitOpt&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code &lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://colab.research.google.com/github/PedroFerreiradaCosta/FaceFitOpt/blob/master/FaceFitOpt_Github.ipynb&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-google  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Colab&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://www.automl.org/wp-content/uploads/2020/07/AutoML_2020_paper_58_poster.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-chalkboard  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Poster&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://slideslive.com/38930665&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-video  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Video&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;presentation-embed-38930665&#34;&gt;&lt;/div&gt;
+&lt;script src=&#39;https://slideslive.com/embed_presentation.js&#39;&gt;&lt;/script&gt;
+&lt;script&gt;
+    embed = new SlidesLiveEmbed(&#39;presentation-embed-38930665&#39;, {
+        presentationId: &#39;38930665&#39;,
+        autoPlay: false, // change to true to autoplay the embedded presentation
+        verticalEnabled: true
+    });
+&lt;/script&gt;
+&lt;br&gt;
+A second part of the project is to build a tool that leverages FaceFitOpt (Bayesian optimization and GANs) with real-time EEG to target a biomarkers ERP (event-related potential). This paper is currently under review.
+&lt;!-- FaceFitOpt paper (ICML)
+
+Video da apresentacao
+
+Slides
+
+SI.NeuroImage Paper
+
+Code (toolbox)
+
+Rianne&#39;s paper (adults)
+ --&gt;
+&lt;/details&gt;
+&lt;hr&gt;
+&lt;!-- 
+```diff
+  &#34;scripts&#34;: {
+    &#34;size&#34;: &#34;size-limit&#34;,
+-   &#34;test&#34;: &#34;jest &amp;&amp; eslint .&#34;
++   &#34;test&#34;: &#34;jest &amp;&amp; eslint . &amp;&amp; npm run size&#34;
+  }
+```
+
+
+&lt;p align=&#34;center&#34;&gt;
+  &lt;a href=&#34;#key-features&#34;&gt;Key Features&lt;/a&gt; •
+  &lt;a href=&#34;#how-to-use&#34;&gt;How To Use&lt;/a&gt; •
+  &lt;a href=&#34;#download&#34;&gt;Download&lt;/a&gt; •
+  &lt;a href=&#34;#credits&#34;&gt;Credits&lt;/a&gt; •
+  &lt;a href=&#34;#related&#34;&gt;Related&lt;/a&gt; •
+  &lt;a href=&#34;#license&#34;&gt;License&lt;/a&gt;
+&lt;/p&gt;
+
+ --&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

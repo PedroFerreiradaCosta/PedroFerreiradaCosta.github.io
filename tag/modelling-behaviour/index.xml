@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Modelling behaviour | Pedro F da Costa</title>
+    <link>http://pedroferreiradacosta.github.io/tag/modelling-behaviour/</link>
+      <atom:link href="http://pedroferreiradacosta.github.io/tag/modelling-behaviour/index.xml" rel="self" type="application/rss+xml" />
+    <description>Modelling behaviour</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2021 Pedro F da Costa</copyright><lastBuildDate>Tue, 01 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Modelling behaviour</title>
+      <link>http://pedroferreiradacosta.github.io/tag/modelling-behaviour/</link>
+    </image>
+    
+    <item>
+      <title>Elucidating Cognitive Processes Using LSTMs</title>
+      <link>http://pedroferreiradacosta.github.io/publication/da-costa-2019/</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/da-costa-2019/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Application of Artificial Neural Networks for modelling cognitive dimensions</title>
+      <link>http://pedroferreiradacosta.github.io/publication/da-costa-2018/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/da-costa-2018/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

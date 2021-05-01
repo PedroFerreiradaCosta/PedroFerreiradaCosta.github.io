@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>genetic algorithms | Pedro F da Costa</title>
+    <link>http://pedroferreiradacosta.github.io/tag/genetic-algorithms/</link>
+      <atom:link href="http://pedroferreiradacosta.github.io/tag/genetic-algorithms/index.xml" rel="self" type="application/rss+xml" />
+    <description>genetic algorithms</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2021 Pedro F da Costa</copyright><lastBuildDate>Wed, 01 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>genetic algorithms</title>
+      <link>http://pedroferreiradacosta.github.io/tag/genetic-algorithms/</link>
+    </image>
+    
+    <item>
+      <title>Brain-Age Prediction Using Shallow Machine Learning: Predictive Analytics Competition 2019</title>
+      <link>http://pedroferreiradacosta.github.io/publication/da-costa-2020-a/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/da-costa-2020-a/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

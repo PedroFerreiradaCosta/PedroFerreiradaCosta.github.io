@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RNNs | Pedro F da Costa</title>
+    <link>http://pedroferreiradacosta.github.io/tag/rnns/</link>
+      <atom:link href="http://pedroferreiradacosta.github.io/tag/rnns/index.xml" rel="self" type="application/rss+xml" />
+    <description>RNNs</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2021 Pedro F da Costa</copyright><lastBuildDate>Thu, 02 Apr 2020 15:43:22 +0100</lastBuildDate>
+    <image>
+      <url>http://pedroferreiradacosta.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>RNNs</title>
+      <link>http://pedroferreiradacosta.github.io/tag/rnns/</link>
+    </image>
+    
+    <item>
+      <title>Modelling Behaviour</title>
+      <link>http://pedroferreiradacosta.github.io/project/modelling-behaviour/</link>
+      <pubDate>Thu, 02 Apr 2020 15:43:22 +0100</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/project/modelling-behaviour/</guid>
+      <description>&lt;div style=&#34;text-align: justify&#34;&gt;
+The relationship between the brain and cognition remains unclear, despite several decades of functional neuroimaging research. One limitation is that the cognitive processes we attempt to match to brain activity are taken from psychological constructs derived in a somewhat ad hoc manner. This project took a different approach, taking advantage of developments with artificial neural networks (ANNs) to learn shared mechanisms. The purpose was to evaluate the execution mechanisms between multiple cognitive tasks without relying on predefined cognitive domains. Therefore, a Recurrent Neural Network was developed to perform six cognitive tasks with an accuracy of 93%, that tapped on the processes of reaction, inhibition and working memory. With regard to the obtained model, it was tested if the mechanism provides a good explanation for the activation patterns in the brain regions previously associated to the cognitive processes. Although comparisons between the model’s activations and real brain data bared little similarities, the model’s mechanisms expressed an effective system of interpreting each task. It was clear, by analysis of the model’s interpretation of the input dataset, that the concept of task and moment of reaction were important factors for the correct solution. From the study of node variation along trials, one stood out (unit 28) by displaying a behaviour similar to inhibition control in biological systems. This work intended to provide novel insights into both brain and cognition, suggesting a potential parallelism between the artificial model and the biological processes. This perspective can contribute to a clearer interpretation of the cognitive processes.
+&lt;br&gt;&lt;br&gt;
+&lt;p&gt;This work was developed for my MSc thesis at the C3NL in Imperial College London. I presented this work at the Conference for Computational Neuroscience.&lt;/p&gt;
+&lt;p&gt;&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://pedroferreiradacosta.github.io/files/daCosta_Master_thesis.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-book  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Thesis&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://ccneuro.org/2019/proceedings/0000272.pdf&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fas fa-file-alt  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Paper&lt;/a&gt;
+&lt;a class = &#34;btn btn-outline-primary btn-page-header&#34; href=&#34;https://github.com/PedroFerreiradaCosta/Solving-Cognitive-Tasks-w-LSTMs&#34; target=&#34;_blank&#34;&gt;
+  &lt;i class=&#34;fab fa-github  pr-1 fa-fw&#34;&gt;&lt;/i&gt; Code&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Application of Artificial Neural Networks for modelling cognitive dimensions</title>
+      <link>http://pedroferreiradacosta.github.io/publication/da-costa-2018/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      <guid>http://pedroferreiradacosta.github.io/publication/da-costa-2018/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

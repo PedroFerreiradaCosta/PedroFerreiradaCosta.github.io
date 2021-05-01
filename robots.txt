@@ -1,0 +1,3 @@
+User-agent: *
+
+Sitemap: http://pedroferreiradacosta.github.io/sitemap.xml
